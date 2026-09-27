@@ -148,6 +148,7 @@ class KnowledgeContractTests(unittest.TestCase):
                 "vault:wiki/meta/ledgers/claim-ledger.json",
                 "vault:wiki/meta/ledgers/source-ledger.json",
                 "vault:wiki/overview.md",
+                "vault:wiki/purpose.md",
             },
             {item["pattern"] for item in capabilities["wiki"]["write_scope"]},
         )

@@ -39,6 +39,8 @@ def test_init_and_adopt_are_non_destructive() -> None:
         assert scan_vault(vault)["workspace_config"]
         assert "created: 2026-07-11" in (vault / "wiki/index.md").read_text()
         assert "{{generated_date}}" not in (vault / "wiki/index.md").read_text()
+        assert (vault / "wiki/purpose.md").is_file()
+        assert "{{generated_date}}" not in (vault / "wiki/purpose.md").read_text()
 
         custom = vault / ".obsidian/app.json"
         custom.write_text('{"custom": true}\n')

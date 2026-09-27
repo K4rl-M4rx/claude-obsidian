@@ -77,9 +77,11 @@ new immutable capture or an honest ledger update, not an overwrite.
    connection beyond the captured source. A concise, searchable source may need
    only its source/ledger record or a no-op; do not paraphrase merely to create
    pages.
-4. Read `wiki/hot.md`, `wiki/index.md`, active methodology settings, and only
-   the relevant existing pages. Default to five existing pages per source; raise
-   the budget explicitly when needed.
+4. Read `wiki/purpose.md` first when it exists — it is the user-owned
+   direction that defines what counts as worth ingesting and synthesizing —
+   then `wiki/hot.md`, `wiki/index.md`, active methodology settings, and only
+   the relevant existing pages. Default to five existing pages per source;
+   raise the budget explicitly when needed.
 5. Read each in-scope source completely within the agreed budget. If it cannot
    be read completely, label the result partial and record the missing range.
 6. Extract source metadata, falsifiable claims, entities, concepts,

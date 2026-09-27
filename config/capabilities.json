@@ -334,6 +334,10 @@
         {
           "pattern": "vault:wiki/overview.md",
           "access": "transactional"
+        },
+        {
+          "pattern": "vault:wiki/purpose.md",
+          "access": "transactional"
         }
       ],
       "needs": {

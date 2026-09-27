@@ -18,6 +18,7 @@ vault/
 │   ├── log.md                  # completed operation history, newest first
 │   ├── hot.md                  # bounded recent context, not a transcript
 │   ├── overview.md             # high-level map
+│   ├── purpose.md              # user-owned goals, key questions, and scope
 │   ├── sources/
 │   ├── entities/
 │   ├── concepts/
@@ -141,6 +142,13 @@ Hooks may read and emit this file as bounded data. They do not update it.
 
 The overview synthesizes stable, high-level structure and links to supporting
 pages. It changes less frequently than hot context.
+
+### `wiki/purpose.md`
+
+The user-owned direction for the vault: goals, key questions, and scope. Read
+it before planning an ingest or answering a query when it exists. Agents never
+rewrite its content; changes go through a reviewed transaction at the user's
+direction.
 
 ## Provenance ledgers
 

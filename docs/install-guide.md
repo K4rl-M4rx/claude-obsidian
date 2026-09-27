@@ -122,7 +122,7 @@ The generated vault contains:
 - `.claude-obsidian.json`—workspace identity and vault selection;
 - `inbox/`—visible source intake;
 - `.raw/`—immutable source payloads and legacy delta manifest;
-- `wiki/`—index, log, hot cache, overview, and generated notes;
+- `wiki/`—index, log, hot cache, overview, purpose, and generated notes;
 - `.obsidian/`—minimal non-destructive Obsidian defaults;
 - `.vault-meta/`—ignored runtime state created when needed.
 

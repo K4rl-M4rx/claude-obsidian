@@ -120,6 +120,7 @@ _BOOTSTRAP_COMMON_PATHS = {
     "wiki/meta/ledgers/claim-ledger.json",
     "wiki/meta/ledgers/source-ledger.json",
     "wiki/overview.md",
+    "wiki/purpose.md",
 }
 _SETUP_EXTENSION_PATHS = {
     ".vault-meta/address-counter.txt",

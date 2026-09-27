@@ -9,6 +9,12 @@ implementation record for older releases.
 
 ### Added
 
+- `wiki/purpose.md`: a user-owned direction page (goals, key questions, scope)
+  shipped by `init` as a template with placeholder sections. Ingest and query
+  read it for direction when it exists — it frames what counts as worth
+  ingesting, synthesizing, and answering — and agents never rewrite its
+  content; changes go through a reviewed transaction at the user's direction.
+  The lint orphan check exempts it like the other singular structural pages.
 - `synthesis` page type: a cross-source theme or pattern that links back to
   every supporting source. Routable in all four modes, with a `synthesis_folder`
   generic setting that defaults to `wiki/synthesis/` (under `para`,

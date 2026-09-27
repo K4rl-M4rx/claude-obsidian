@@ -247,6 +247,43 @@ tags:
             {item["target"] for item in self.report["dead_links"]},
         )
 
+    def test_purpose_page_is_not_reported_as_orphan(self) -> None:
+        """`wiki/purpose.md` is a singular, user-owned structural page like
+        `overview.md`: it carries no inbound links by design, so the orphan
+        check must exempt it while ordinary unlinked pages stay flagged.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            vault = Path(directory) / "vault"
+            (vault / "wiki" / "concepts").mkdir(parents=True)
+            (vault / "wiki" / "purpose.md").write_text(
+                "---\n"
+                "type: meta\n"
+                "title: Vault Purpose\n"
+                "status: seed\n"
+                "created: 2026-09-28\n"
+                "updated: 2026-09-28\n"
+                "tags:\n  - meta\n"
+                "---\n\n"
+                "# Vault Purpose\n\n"
+                "- What this vault exists to compound.\n",
+                encoding="utf-8",
+            )
+            (vault / "wiki" / "concepts" / "Unlinked.md").write_text(
+                "---\n"
+                "type: concept\n"
+                "title: Unlinked\n"
+                "status: seed\n"
+                "created: 2026-09-28\n"
+                "updated: 2026-09-28\n"
+                "tags:\n  - concept\n"
+                "---\n\n"
+                "# Unlinked\n\nBody without links.\n",
+                encoding="utf-8",
+            )
+            report = lint_engine.lint_vault(vault)
+        orphaned = {entry["path"] for entry in report["orphans"]}
+        self.assertEqual({"wiki/concepts/Unlinked.md"}, orphaned)
+
     def test_repeated_runs_and_different_checkout_paths_are_byte_identical(
         self,
     ) -> None:

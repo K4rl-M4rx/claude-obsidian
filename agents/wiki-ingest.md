@@ -47,8 +47,9 @@ invoke a network client, or substitute another source.
    canonical page when the captured source adds no durable synthesis,
    navigation, decision, or reusable connection.
 4. Read `.claude-obsidian.json`, the active methodology-mode configuration,
-   `wiki/index.md`, `wiki/hot.md`, and only the pages needed to detect existing
-   entities, concepts, claims, and contradictions.
+   `wiki/purpose.md` when it exists (the user-owned direction that bounds what
+   is worth filing), `wiki/index.md`, `wiki/hot.md`, and only the pages needed
+   to detect existing entities, concepts, claims, and contradictions.
 5. Preserve evidence fidelity. Record exact source-relative locators (page,
    section, timestamp, line, or fragment only when present). Never invent a
    quotation, locator, date, confidence score, or corroborating source.

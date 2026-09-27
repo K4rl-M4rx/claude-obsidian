@@ -42,7 +42,8 @@ selected vault's `wiki/` directory.
 1. Resolve the vault explicitly when possible. Never use the plugin directory
    as a vault.
 2. Read `wiki/hot.md`, then identify the query's entities, time scope, and
-   decision context.
+   decision context. Read `wiki/purpose.md` when it exists: the user-owned
+   direction frames what answers are in scope and which key questions matter.
 3. Check whether retrieval is verified:
 
    ```bash

@@ -86,6 +86,7 @@ _ORPHAN_EXCLUDED_NAMES = {
     "log.md",
     "hot.md",
     "overview.md",
+    "purpose.md",
     "dashboard.md",
     "wiki map.md",
     "getting-started.md",

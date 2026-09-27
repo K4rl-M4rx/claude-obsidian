@@ -55,6 +55,10 @@ the emitted `approved_plan_sha256` unchanged. Do not use
 replacement. Setup is non-destructive by default and creates no upstream Git
 remote.
 
+A fresh init ships `wiki/purpose.md` as a template. After the user approves
+the init, offer to draft its goals, key questions, and scope with them; it is
+user-owned content, so never fill it in unasked.
+
 If the user asks for a domain-specific scaffold, establish the baseline first,
 then read [modes.md](references/modes.md). Draft the additional pages and
 configuration as one operation-level transaction. Never mutate vault files with

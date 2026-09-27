@@ -12,6 +12,15 @@ claude-obsidian is an original work. The following third-party patterns, tools, 
 
 ---
 
+## llm_wiki Purpose-Page Concept
+
+**Author:** nashsu
+**Source:** https://github.com/nashsu/llm_wiki
+**License:** GPL-3.0 (this project reimplements the concept only; no code was copied)
+**Use:** The `wiki/purpose.md` direction page — a short, user-owned statement of goals, key questions, and scope that ingest and query read for orientation — adapts the purpose-file concept described in llm_wiki's documentation. The template, wording, and behavior in claude-obsidian are an independent implementation.
+
+---
+
 ## ITS CSS Snippets
 
 **Author:** SlRvb
