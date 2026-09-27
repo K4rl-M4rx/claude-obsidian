@@ -91,15 +91,35 @@ new immutable capture or an honest ledger update, not an overwrite.
    code-spans for literal code, CLI flags, and exact identifiers, not for
    citable URLs. This guidance applies only to narrative prose; ledger and
    manifest locator fields keep the raw URL string.
-7. Reuse existing canonical pages and stable addresses. Request new addresses
-   through `address_requests`; never call a counter allocator from a worker.
-   File a cross-source theme as `synthesis` and a criteria-based contrast as
-   `comparison` only when the evidence spans multiple sources; otherwise reuse
-   concept or source pages.
+7. Run the analysis pass before drafting pages: compile one structured
+   per-source analysis — extracted entities, concepts, falsifiable claims,
+   contradictions against existing pages, cross-source synthesis and
+   comparison opportunities, and the proposed page plan with types. Present
+   each source's analysis alongside its proposed pages when previewing the
+   operation for approval, so the reviewable reasoning is visible before
+   anything is applied; if the user objects to the analysis, re-draft from
+   the corrected analysis without re-reading the source. Draft pages strictly
+   from that analysis; a worker that returns early leaves its finished
+   analysis as the resumable intermediate the next dispatch drafts from.
+8. Draft pages from the analysis. Reuse existing canonical pages and stable
+   addresses. Request new addresses through `address_requests`; never call a
+   counter allocator from a worker. File a cross-source theme as `synthesis`
+   and a criteria-based contrast as `comparison` only when the evidence spans
+   multiple sources; otherwise reuse concept or source pages.
+
+A source already present in the source ledger — content hash matching and at
+least one linked page — counts as ingested: the hash check (step 1) plus the
+ledger make re-ingestion a proposed skip with no new pages for that source,
+surfacing any pending review state, unless the user asks for re-analysis. A
+batch where every source is a skip needs no transaction; report the findings
+and stop.
 
 Parallel agents may fetch, inspect, and return drafts/evidence. They must not
-write vault files, reserve addresses, edit manifests, or update ledgers. The
-orchestrator resolves conflicts and merges once.
+write vault files, reserve addresses, edit manifests, or update ledgers. Give
+each worker the hash-check result and any completed analysis from a previous
+dispatch (partial, or corrected after review), so the worker can skip the
+analysis phase and draft from it. The orchestrator resolves conflicts and
+merges once.
 
 ## Apply provenance rules
 

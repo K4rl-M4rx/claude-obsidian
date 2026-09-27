@@ -29,6 +29,9 @@ The parent must provide:
 - One local source path and its stable source identifier, if assigned.
 - The requested emphasis and filing mode, if any.
 - The vault pages you may inspect or a bounded discovery scope.
+- The orchestrator's hash-check result against the source ledger, and a
+  completed analysis from a previous dispatch (partial, or corrected after
+  review), when the parent has either.
 
 If the source is missing, outside the selected vault, not already captured,
 or the scope is ambiguous, stop and report the problem. Do not fetch a URL,
@@ -45,7 +48,12 @@ invoke a network client, or substitute another source.
    after reading. Focus extraction on the type's useful structure.
 3. Read the source completely. Never alter `.raw/` or `inbox/`. Recommend no
    canonical page when the captured source adds no durable synthesis,
-   navigation, decision, or reusable connection.
+   navigation, decision, or reusable connection. When the parent's scope shows
+   the source's content hash already in the source ledger with linked pages,
+   return a no-op packet — empty `proposals`, the matching ledger record cited
+   in `evidence`, any pending review state surfaced — unless the parent asked
+   for re-analysis. When resuming from a provided analysis, read only the
+   ranges needed for exact quotations.
 4. Read `.claude-obsidian.json`, the active methodology-mode configuration,
    `wiki/purpose.md` when it exists (the user-owned direction that bounds what
    is worth filing), `wiki/index.md`, `wiki/hot.md`, and only the pages needed
@@ -65,10 +73,24 @@ invoke a network client, or substitute another source.
      least two existing or newly proposed pages, where the source's evidence
      supports the criteria and each cell cites a source-relative locator.
      A passing mention of two names is not a comparison.
-7. For every proposed target, read its current bytes and return its expected
+7. Draft in two phases. Phase one is the analysis: compile the structured
+   per-source analysis defined in the output schema — extracted entities,
+   concepts, falsifiable claims, contradictions with existing pages,
+   cross-source synthesis and comparison opportunities, and the proposed page
+   plan — and finish it before drafting any page. If the parent provides a
+   completed analysis from a previous dispatch — partial, or corrected after
+   review — skip phase one and
+   draft from it as given, re-reading only the locator ranges needed for
+   exact quotations. Phase two drafts pages strictly from that analysis; if
+   drafting diverges from the analysis page plan, revise the analysis to
+   match before returning so the packet presents one coherent plan. If the
+   turn budget threatens the packet, stop new drafting and return a `partial`
+   packet carrying the completed analysis: a resumable analysis replaces
+   re-reading the source on the next dispatch.
+8. For every proposed target, read its current bytes and return its expected
    SHA-256; use `null` only for a verified absent path. Draft complete proposed
    content or a precise patch that the parent can merge without guessing.
-8. Return source-ledger and claim-ledger proposals, including independence and
+9. Return source-ledger and claim-ledger proposals, including independence and
    freshness status when the available evidence supports them. Flag conflicts
    rather than silently resolving them.
 
@@ -88,6 +110,13 @@ source:
   path: <vault-relative captured path>
   sha256: <source hash>
   title: <title>
+analysis:
+  entities: [<named entities worth pages or merges>]
+  concepts: [<concepts worth pages or merges>]
+  claims: [<falsifiable claims with real locators>]
+  conflicts: [<contradictions with existing pages or claims, or none>]
+  cross_source: [<synthesis/comparison opportunities naming their supporting pages, or none>]
+  page_plan: [<proposed targets with types and why>]
 proposals:
   - path: <vault-relative target>
     action: create | replace
@@ -113,10 +142,11 @@ partial:
 ```
 
 Watch the remaining turn budget. If the complete packet is at risk, stop new
-discovery and return a structured `partial` packet while there is still room;
-include only verified work, name every unread or unfinished item, and give the
-parent a resumable next step. Never end with a prose-only or silently truncated
-result.
+discovery and drafting and return a structured `partial` packet while there is
+still room; include the finished analysis even when proposals are cut — the
+analysis is the resumable intermediate the next dispatch drafts from — and
+name every unread or unfinished item with a resumable next step. Never end
+with a prose-only or silently truncated result.
 
 Do not include `wiki/index.md`, `wiki/log.md`, `wiki/hot.md`, address-counter,
 or legacy-manifest edits unless the parent explicitly asked you to draft that

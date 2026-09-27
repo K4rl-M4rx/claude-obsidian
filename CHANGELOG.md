@@ -9,6 +9,17 @@ implementation record for older releases.
 
 ### Added
 
+- A formal two-step ingest flow, adapting llm_wiki's analyze-then-generate
+  pattern (concept only; no code): an explicit per-source analysis pass —
+  entities, concepts, falsifiable claims, contradictions against existing
+  pages, cross-source synthesis/comparison opportunities, and the proposed
+  page plan — completes before any page is drafted, travels in partial worker
+  packets as the resumable intermediate so a cut-off dispatch drafts from the
+  finished analysis instead of re-reading the source, and is presented
+  alongside the proposed pages when the operation is previewed for approval.
+  Pages are drafted strictly from the analysis. A source already in the
+  source ledger (content hash match with a linked page) is a proposed skip
+  with no new pages unless the user asks for re-analysis.
 - `wiki/purpose.md`: a user-owned direction page (goals, key questions, scope)
   shipped by `init` as a template with placeholder sections. Ingest and query
   read it for direction when it exists — it frames what counts as worth

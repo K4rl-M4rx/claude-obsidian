@@ -107,6 +107,8 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("compilation-value gate", ingest)
         self.assertIn("outside the selected vault", ingest)
         self.assertIn("active methodology index or MOC", ingest)
+        self.assertIn("analysis pass", ingest)
+        self.assertIn("proposed skip", ingest)
         schema = (ROOT / "WIKI.md").read_text(encoding="utf-8")
         self.assertIn("active catalog or MOC", schema)
 
@@ -182,6 +184,11 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("status: complete | partial", ingest_agent)
         self.assertIn("silently truncated", ingest_agent)
         self.assertIn("Batch independent discovery", ingest_agent)
+        self.assertIn("analysis:\n  entities:", ingest_agent)
+        self.assertIn("two phases", ingest_agent)
+        self.assertIn("resumable intermediate", ingest_agent)
+        self.assertIn("completed analysis from a previous dispatch", ingest_agent)
+        self.assertIn("no-op packet", ingest_agent)
 
     def test_canvas_discloses_render_time_network_egress(self) -> None:
         skill = (ROOT / "skills/canvas/SKILL.md").read_text(encoding="utf-8")

@@ -223,10 +223,11 @@ packets with evidence, target paths, and expected hashes to one orchestrator.
 
 An ingest operation may include a create-only raw capture, source summary,
 entity/concept pages, provenance records, index/MOC updates, log, hot cache, and
-overview. Every canonical create or removal updates an active index or MOC;
-overview changes remain conditional on a changed high-level picture. Every
-extracted claim remains traceable to the source. Batch budgets bound source
-count, total bytes, pages, links, and elapsed work.
+overview. A per-source analysis pass precedes page drafting and is presented
+with the operation preview. Every canonical create or removal updates an
+active index or MOC; overview changes remain conditional on a changed
+high-level picture. Every extracted claim remains traceable to the source.
+Batch budgets bound source count, total bytes, pages, links, and elapsed work.
 
 ### Query
 
