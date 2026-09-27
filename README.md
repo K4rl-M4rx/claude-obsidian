@@ -173,6 +173,7 @@ the same evidence, vault-selection, and mutation rules.
 | `defuddle` | Clean, readable web content before ingestion |
 | `wiki-fold` | Extractive, traceable rollups of the operation log |
 | `wiki-mode` | Generic, LYT, PARA, or Zettelkasten filing conventions |
+| `wiki-graph` | Read-only graph analytics: relevance, communities, bridges, and gaps |
 | `wiki-retrieve` | Contextual prefixes, BM25, and optional cosine reranking |
 | `wiki-cli` | Obsidian CLI reads and search with transaction-safe writes |
 

@@ -12,12 +12,12 @@ claude-obsidian is an original work. The following third-party patterns, tools, 
 
 ---
 
-## llm_wiki Purpose-Page Concept
+## llm_wiki Purpose-Page and Graph-Analysis Concepts
 
 **Author:** nashsu
 **Source:** https://github.com/nashsu/llm_wiki
-**License:** GPL-3.0 (this project reimplements the concept only; no code was copied)
-**Use:** The `wiki/purpose.md` direction page — a short, user-owned statement of goals, key questions, and scope that ingest and query read for orientation — adapts the purpose-file concept described in llm_wiki's documentation. The template, wording, and behavior in claude-obsidian are an independent implementation.
+**License:** GPL-3.0 (this project reimplements the concepts only; no code was copied)
+**Use:** Two features adapt concepts described in llm_wiki's documentation. The `wiki/purpose.md` direction page — a short, user-owned statement of goals, key questions, and scope that ingest and query read for orientation — adapts llm_wiki's purpose-file concept. The `wiki-graph` analytics — 4-signal page relevance, Louvain communities with cohesion scoring, and bridge/gap insights — adapt llm_wiki's graph-analysis layer, including its documented signal weights and cohesion threshold. The templates, code, and behavior in claude-obsidian are an independent implementation.
 
 ---
 

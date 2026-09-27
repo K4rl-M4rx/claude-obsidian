@@ -449,6 +449,40 @@
       "verification_reason": "no automated end-to-end behavioral verifier is implemented for extractive fold operations"
     },
     {
+      "id": "wiki-graph",
+      "tier": "extension",
+      "implementation_paths": [
+        "scripts/graph-report.py",
+        "skills/wiki-graph/SKILL.md"
+      ],
+      "read_scope": [
+        "plugin:skills/wiki-graph/**",
+        "plugin:skills/wiki-ingest/SKILL.md",
+        "plugin:skills/autoresearch/SKILL.md",
+        "vault:wiki/**"
+      ],
+      "write_scope": [],
+      "needs": {
+        "shell": true,
+        "network": false
+      },
+      "transaction_type": "none",
+      "confirmation": {
+        "mutation": "not_applicable",
+        "network_egress": "not_applicable",
+        "destructive": "forbidden"
+      },
+      "configuration": {
+        "path_requirements": [],
+        "external_commands": []
+      },
+      "verification_command": [
+        "{python}",
+        "tests/test_graph_report.py"
+      ],
+      "verification_reason": "deterministic graph analytics verified against hand-built fixtures covering relevance, communities, bridges, and gaps"
+    },
+    {
       "id": "wiki-ingest",
       "tier": "core",
       "implementation_paths": [

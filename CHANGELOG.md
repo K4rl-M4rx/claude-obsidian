@@ -9,6 +9,16 @@ implementation record for older releases.
 
 ### Added
 
+- `wiki-graph`: read-only graph analytics for a vault, adapting the LLM Wiki
+  pattern's analysis layer (concept only; stdlib implementation, no third-party
+  dependency, no copied code). `scripts/graph-report.py` computes 4-signal page
+  relevance (direct link ×3.0, shared sources ×4.0, Adamic-Adar ×1.5, type
+  affinity ×1.0), deterministic Louvain communities with cohesion scores
+  (loose below 0.15, degree ≤ 1 listed as isolated), bridge pages (link-graph
+  articulation points), unsupported concept/question pages (no inbound link
+  and no `sources:`), and dangling-link counts. The report goes to stdout —
+  the script writes nothing to the vault; keeping a report is a normal
+  reviewed transaction. Verified by `tests/test_graph_report.py` fixtures.
 - A formal two-step ingest flow, adapting llm_wiki's analyze-then-generate
   pattern (concept only; no code): an explicit per-source analysis pass —
   entities, concepts, falsifiable claims, contradictions against existing
