@@ -91,6 +91,9 @@ new immutable capture or an honest ledger update, not an overwrite.
    manifest locator fields keep the raw URL string.
 7. Reuse existing canonical pages and stable addresses. Request new addresses
    through `address_requests`; never call a counter allocator from a worker.
+   File a cross-source theme as `synthesis` and a criteria-based contrast as
+   `comparison` only when the evidence spans multiple sources; otherwise reuse
+   concept or source pages.
 
 Parallel agents may fetch, inspect, and return drafts/evidence. They must not
 write vault files, reserve addresses, edit manifests, or update ledgers. The

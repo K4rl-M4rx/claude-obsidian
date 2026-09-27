@@ -17,7 +17,9 @@ CLI:
   wiki-mode.py get                      # print current mode (default: generic)
   wiki-mode.py config                   # print full config JSON
   wiki-mode.py route TYPE NAME          # print suggested path for new content
-                                        # TYPE: source|entity|concept|session|research
+                                        # TYPE: any value derived from
+                                        # claude_obsidian.page_schema
+                                        # (ROUTABLE_TYPES + legacy aliases)
   wiki-mode.py id                       # mint a Zettelkasten ID (timestamp)
   wiki-mode.py templates                # list per-mode template files
 
@@ -27,6 +29,7 @@ Exit codes:
   3 — invalid mode string
   4 — invalid content type
   5 — existing mode configuration is invalid
+  6 — valid page type that has no filing destination
 """
 
 import argparse
@@ -104,6 +107,8 @@ DEFAULT_CONFIG = {
             "concepts_folder": "wiki/concepts/",
             "sessions_folder": "wiki/sessions/",
             "questions_folder": "wiki/questions/",
+            "comparisons_folder": "wiki/comparisons/",
+            "synthesis_folder": "wiki/synthesis/",
         },
     },
 }
@@ -278,14 +283,16 @@ def route_path(mode, content_type, name, cfg):
     if mode == "generic":
         g = cfg["config"]["generic"]
         mapping = {
-            "source":   g["sources_folder"] + _markdown_filename(slug),
-            "entity":   g["entities_folder"] + _markdown_filename(raw),
-            "concept":  g["concepts_folder"] + _markdown_filename(raw),
-            "session":  g["sessions_folder"] + _markdown_filename(slug),
-            "question": g["questions_folder"] + _markdown_filename(slug),
+            "source":     g["sources_folder"] + _markdown_filename(slug),
+            "entity":     g["entities_folder"] + _markdown_filename(raw),
+            "concept":    g["concepts_folder"] + _markdown_filename(raw),
+            "session":    g["sessions_folder"] + _markdown_filename(slug),
+            "question":   g["questions_folder"] + _markdown_filename(slug),
+            "comparison": g["comparisons_folder"] + _markdown_filename(slug),
+            "synthesis":  g["synthesis_folder"] + _markdown_filename(slug),
             # Legacy alias of `concept`; its existing destination is preserved
             # rather than rewritten, so accepted calls keep their exact paths.
-            "research": g["concepts_folder"] + _markdown_filename(raw),
+            "research":   g["concepts_folder"] + _markdown_filename(raw),
         }
         result = mapping[content_type]
 
@@ -304,9 +311,11 @@ def route_path(mode, content_type, name, cfg):
             "entity":   p["resources_folder"] + "people/" + _markdown_filename(raw),
             "concept":  p["resources_folder"] + "concepts/" + _markdown_filename(raw),
             # Session notes land in projects/inbox/; user reroutes to specific projects
-            "session":  p["projects_folder"] + "inbox/" + _markdown_filename(slug),
-            "question": p["resources_folder"] + "questions/" + _markdown_filename(slug),
-            "research": p["resources_folder"] + research_stem + "/" + research_stem + ".md",
+            "session":    p["projects_folder"] + "inbox/" + _markdown_filename(slug),
+            "question":   p["resources_folder"] + "questions/" + _markdown_filename(slug),
+            "comparison": p["resources_folder"] + "comparisons/" + _markdown_filename(slug),
+            "synthesis":  p["resources_folder"] + "synthesis/" + _markdown_filename(slug),
+            "research":   p["resources_folder"] + research_stem + "/" + research_stem + ".md",
         }
         result = mapping[content_type]
 

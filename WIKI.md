@@ -17,11 +17,13 @@ vault/
 │   ├── index.md                # catalog and navigation
 │   ├── log.md                  # completed operation history, newest first
 │   ├── hot.md                  # bounded recent context, not a transcript
-│   ├── overview.md             # high-level synthesis
+│   ├── overview.md             # high-level map
 │   ├── sources/
 │   ├── entities/
 │   ├── concepts/
 │   ├── questions/
+│   ├── comparisons/
+│   ├── synthesis/
 │   ├── canvases/
 │   └── meta/ledgers/
 │       ├── source-ledger.json
@@ -76,6 +78,7 @@ Common page types:
 | `concept` | Idea, framework, mechanism, or definition |
 | `question` | A scoped answer with visible evidence status |
 | `comparison` | Criteria-based contrast with cited support |
+| `synthesis` | Cross-source theme or pattern linking back to every supporting source |
 | `session` | User-approved summary of selected conversation content |
 | `overview` | High-level map of a domain or vault |
 | `meta` | Index, log, cache, convention, or maintenance page |
@@ -85,10 +88,11 @@ Common page types:
 table above documents it for a reader; code reads the module rather than
 restating the values, and a test asserts the two stay in step.
 
-`source`, `entity`, `concept`, `question`, and `session` are *routable*: the
-methodology router can place a new page of that type. `comparison`, `overview`,
-`meta`, and `fold` are valid frontmatter and not routable, because the product
-creates them through a dedicated operation instead of filing a new note.
+`source`, `entity`, `concept`, `question`, `comparison`, `synthesis`, and
+`session` are *routable*: the methodology router can place a new page of that
+type. `overview`, `meta`, and `fold` are valid frontmatter and not routable,
+because the product creates them through a dedicated operation instead of
+filing a new note.
 
 Common statuses are `seed`, `active`, `developing`, `evergreen`, `answered`,
 `provisional`, `contested`, `deprecated`, and `archived`. Use only statuses the

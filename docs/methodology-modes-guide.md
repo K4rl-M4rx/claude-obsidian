@@ -7,7 +7,7 @@ change evidence rules, transaction safety, or existing files.
 
 | Mode | Principle | Typical routes |
 |---|---|---|
-| Generic | Familiar typed folders without a named methodology | `wiki/sources/`, `entities/`, `concepts/`, `sessions/` |
+| Generic | Familiar typed folders without a named methodology | `wiki/sources/`, `entities/`, `concepts/`, `questions/`, `comparisons/`, `synthesis/`, `sessions/` |
 | LYT | Maps of Content connect atomic notes | `wiki/mocs/`, `wiki/notes/` |
 | PARA | Organize by current actionability | `wiki/projects/`, `areas/`, `resources/`, `archives/` |
 | Zettelkasten | Stable IDs, atomic notes, dense links | Flat `wiki/<id>-<slug>.md` |
@@ -69,7 +69,8 @@ existing filenames are not renamed. Routed filename components are bounded to
 Switching affects only later routing. Before changing:
 
 1. identify which workflows consume routes;
-2. preview representative source, entity, concept, session, and research names;
+2. preview representative names of each routable type
+   (`claude_obsidian/page_schema.py` lists them);
 3. check for filename or basename collisions;
 4. apply the configuration transaction;
 5. run the deterministic linter after the first operation in the new mode.

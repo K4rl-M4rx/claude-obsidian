@@ -46,7 +46,8 @@ selected vault's `wiki/` directory.
 4. Select the smallest useful note type from the declared vocabulary
    (`claude_obsidian/page_schema.py`, documented in WIKI.md) — usually
    `question` for an answered analysis, `concept` for an idea worth naming,
-   `source` for material summary, or `session` for approved conversation
+   `source` for material summary, `comparison` for a criteria-based contrast,
+   `synthesis` for a cross-source theme, or `session` for approved conversation
    content. Use declarative prose, Obsidian wikilinks, and honest frontmatter.
 
 If the material has no durable value or is already represented, report that and

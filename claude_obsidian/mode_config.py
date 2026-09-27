@@ -14,6 +14,8 @@ MODE_FOLDER_KEYS = {
         "concepts_folder",
         "sessions_folder",
         "questions_folder",
+        "comparisons_folder",
+        "synthesis_folder",
     ),
     "lyt": ("moc_folder", "notes_folder"),
     "para": ("projects_folder", "areas_folder", "resources_folder", "archives_folder"),

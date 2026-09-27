@@ -39,6 +39,7 @@ PAGE_TYPES: tuple[str, ...] = (
     "concept",
     "question",
     "comparison",
+    "synthesis",
     "session",
     "overview",
     "meta",
@@ -48,7 +49,6 @@ PAGE_TYPES: tuple[str, ...] = (
 # The types the router deliberately does NOT place. See the module docstring for
 # why each is excluded rather than missing.
 NON_ROUTABLE_TYPES: tuple[str, ...] = (
-    "comparison",
     "overview",
     "meta",
     "fold",

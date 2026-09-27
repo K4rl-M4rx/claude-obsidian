@@ -243,7 +243,7 @@ existing knowledge:
 
 | Mode | Filing principle |
 |---|---|
-| Generic | Sources, concepts, entities, and sessions |
+| Generic | Sources, concepts, entities, questions, comparisons, synthesis, and sessions |
 | LYT | Maps of Content and linked atomic notes |
 | PARA | Projects, Areas, Resources, and Archives |
 | Zettelkasten | Stable identifiers, atomic notes, and dense links |

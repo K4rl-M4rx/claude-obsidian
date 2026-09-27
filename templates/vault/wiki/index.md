@@ -28,3 +28,11 @@ This catalog is updated by completed knowledge operations.
 ## Questions
 
 - No questions indexed yet.
+
+## Comparisons
+
+- No comparisons indexed yet.
+
+## Synthesis
+
+- No synthesis pages indexed yet.

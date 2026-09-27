@@ -77,6 +77,9 @@ dimensions:
 assessment: provisional
 risk: low
 
+# synthesis
+theme: "Cross-source pattern this page develops"
+
 # question
 question: "What is being asked?"
 assessment: unsupported

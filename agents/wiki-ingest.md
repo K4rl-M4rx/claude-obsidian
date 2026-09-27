@@ -55,6 +55,15 @@ invoke a network client, or substitute another source.
 6. Propose the smallest set of creates and updates. Reuse existing pages and
    aliases before proposing new pages. Follow the active filing mode and
    Obsidian Markdown conventions.
+   - Propose a `synthesis` page only when the new source, combined with pages
+     already in the vault, supports a cross-source theme or pattern that no
+     existing page captures; link every supporting source and concept. Never
+     propose a synthesis whose evidence is this source alone — that content
+     belongs in the source page or a concept page.
+   - Propose a `comparison` page only for a criteria-based contrast between at
+     least two existing or newly proposed pages, where the source's evidence
+     supports the criteria and each cell cites a source-relative locator.
+     A passing mention of two names is not a comparison.
 7. For every proposed target, read its current bytes and return its expected
    SHA-256; use `null` only for a verified absent path. Draft complete proposed
    content or a precise patch that the parent can merge without guessing.

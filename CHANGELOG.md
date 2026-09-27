@@ -7,6 +7,26 @@ implementation record for older releases.
 
 ## [Unreleased]
 
+### Added
+
+- `synthesis` page type: a cross-source theme or pattern that links back to
+  every supporting source. Routable in all four modes, with a `synthesis_folder`
+  generic setting that defaults to `wiki/synthesis/` (under `para`,
+  `resources/synthesis/`). The ingest worker proposes one only when the new
+  source, combined with pages already in the vault, supports a theme no
+  existing page captures — never for single-source content.
+
+### Changed
+
+- `comparison` is now routable. It was already a valid frontmatter type but sat
+  in `NON_ROUTABLE_TYPES` with no creation path, so a documented type could not
+  be filed. It gains a `comparisons_folder` generic setting that defaults to
+  `wiki/comparisons/`, routes to `resources/` subfolders under `para`, and the
+  ingest worker proposes one only for criteria-based contrasts where the
+  source's evidence supports each cell. Existing vaults need no migration:
+  both folder keys arrive through the default-config merge, matching the
+  `questions_folder` precedent.
+
 ## [2.2.0] - 2026-09-10
 
 Backlog triage: lint scoping, lock recovery, host validation, the `bin/`

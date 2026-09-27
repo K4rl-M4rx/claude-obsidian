@@ -43,7 +43,7 @@ still apply its eventual writes through one operation transaction.
 
 | Mode | Routing intent |
 |---|---|
-| `generic` | Type-based folders such as sources, entities, concepts, and sessions. |
+| `generic` | Type-based folders such as sources, entities, concepts, sessions, comparisons, and synthesis. |
 | `lyt` | Atomic notes under `wiki/notes/`, connected through MOCs. |
 | `para` | Projects, Areas, Resources, or Archives chosen by actionability. |
 | `zettelkasten` | Flat atomic notes with time-sortable, collision-resistant identifiers and explicit links. |

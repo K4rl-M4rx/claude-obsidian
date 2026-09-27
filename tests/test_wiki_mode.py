@@ -659,7 +659,7 @@ def test_unroutable_valid_type_is_distinguished_from_unknown_type():
         hint=f"{UNKNOWN_TYPE_EXIT} vs {UNROUTABLE_TYPE_EXIT}",
     )
 
-    for page_type in ("overview", "meta", "fold", "comparison"):
+    for page_type in ("overview", "meta", "fold"):
         rejection = route_rejection(page_type)
         assert_true(
             f"{page_type} is valid but not routable",
@@ -718,6 +718,115 @@ def test_routable_types_cannot_escape_the_page_vocabulary():
         sorted(PAGE_TYPES),
         sorted(set(ROUTABLE_TYPES) | set(NON_ROUTABLE_TYPES)),
     )
+
+
+def test_comparison_and_synthesis_route_to_their_own_folders():
+    """Both cross-source types get dedicated destinations, spelled exactly, in
+    the two modes that map types to folders."""
+    cfg = wm.default_config()
+    assert_eq(
+        "generic comparison",
+        "wiki/comparisons/De-Giorgi-vs-Moser.md",
+        wm.route_path("generic", "comparison", "De Giorgi vs Moser", cfg),
+    )
+    assert_eq(
+        "generic synthesis",
+        "wiki/synthesis/energy-methods-survey.md",
+        wm.route_path("generic", "synthesis", "energy methods survey", cfg),
+    )
+    assert_eq(
+        "para comparison",
+        "wiki/resources/comparisons/De-Giorgi-vs-Moser.md",
+        wm.route_path("para", "comparison", "De Giorgi vs Moser", cfg),
+    )
+    assert_eq(
+        "para synthesis",
+        "wiki/resources/synthesis/energy-methods-survey.md",
+        wm.route_path("para", "synthesis", "energy methods survey", cfg),
+    )
+    for mode in ("lyt", "zettelkasten"):
+        for page_type in ("comparison", "synthesis"):
+            path = wm.route_path(mode, page_type, "cross-source theme", cfg)
+            assert_true(
+                f"{page_type} routes under {mode}",
+                path.startswith("wiki/") and path.endswith(".md"),
+                hint=path,
+            )
+
+
+def test_legacy_mode_json_routes_new_types_through_defaults():
+    """A mode.json written before `comparisons_folder`/`synthesis_folder` existed
+    must still route the new types — both callers merge the on-disk file onto
+    their default document, so the new keys arrive from defaults, not disk.
+    """
+    with tempfile.TemporaryDirectory() as directory:
+        vault = Path(directory)
+        (vault / "wiki").mkdir()
+        meta = vault / ".vault-meta"
+        meta.mkdir()
+        legacy = {
+            "schema_version": 1,
+            "mode": "generic",
+            "configured_at": "2026-06-09T14:38:44Z",
+            "config": {
+                "generic": {
+                    "sources_folder": "wiki/sources/",
+                    "entities_folder": "wiki/entities/",
+                    "concepts_folder": "wiki/concepts/",
+                    "sessions_folder": "wiki/sessions/",
+                }
+            },
+        }
+        (meta / "mode.json").write_text(json.dumps(legacy), encoding="utf-8")
+
+        for page_type, expected in (
+            ("comparison", "wiki/comparisons/x.md"),
+            ("synthesis", "wiki/synthesis/x.md"),
+        ):
+            routed = subprocess.run(
+                [sys.executable, str(HELPER), "route", page_type, "x", "--vault", str(vault)],
+                capture_output=True, text=True, timeout=10,
+            )
+            assert_eq(f"legacy mode.json routes {page_type}", 0, routed.returncode)
+            assert_eq(
+                f"legacy mode.json gets the default {page_type} folder",
+                expected,
+                routed.stdout.strip(),
+            )
+
+        core = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "claude-obsidian.py"),
+             "mode", "get", "--vault", str(vault)],
+            capture_output=True, text=True, timeout=15,
+        )
+        assert_eq("legacy mode.json loads through the core CLI", 0, core.returncode)
+        generic = json.loads(core.stdout)["config"]["generic"]
+        assert_eq(
+            "core CLI also defaults comparisons_folder",
+            "wiki/comparisons/",
+            generic["comparisons_folder"],
+        )
+        assert_eq(
+            "core CLI also defaults synthesis_folder",
+            "wiki/synthesis/",
+            generic["synthesis_folder"],
+        )
+
+
+def test_comparison_and_synthesis_are_routable_in_the_schema():
+    """Direct schema-level assertion that both cross-source types are valid and
+    routable. The partition test cannot catch a regression that moves
+    `comparison` back into `NON_ROUTABLE_TYPES`; routing tests only catch it
+    transitively, so state the fact where a reader expects it.
+    """
+    from claude_obsidian.page_schema import PAGE_TYPES, route_rejection
+
+    for page_type in ("comparison", "synthesis"):
+        assert_true(
+            f"{page_type} is in the vocabulary",
+            page_type in PAGE_TYPES,
+        )
+        assert_eq(f"{page_type} is routable", None, route_rejection(page_type))
 
 
 def test_legacy_research_alias_keeps_its_exact_destinations():
@@ -862,6 +971,9 @@ def main():
     test_routable_types_are_derived_not_restated()
     test_routable_types_cannot_escape_the_page_vocabulary()
     test_question_is_routable_in_every_mode()
+    test_comparison_and_synthesis_route_to_their_own_folders()
+    test_comparison_and_synthesis_are_routable_in_the_schema()
+    test_legacy_mode_json_routes_new_types_through_defaults()
     test_unroutable_valid_type_is_distinguished_from_unknown_type()
     test_route_rejection_exit_codes_reach_the_command_line()
     test_legacy_research_alias_keeps_its_exact_destinations()

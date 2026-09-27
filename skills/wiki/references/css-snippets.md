@@ -17,6 +17,7 @@ Create this file at `.obsidian/snippets/vault-colors.css` inside the vault:
   --wiki-5: #6a9955;
   --wiki-6: #d16969;
   --wiki-7: #569cd6;
+  --wiki-8: #d7ba7d;
 }
 
 /* Folder colors in file explorer */
@@ -27,6 +28,7 @@ Create this file at `.obsidian/snippets/vault-colors.css` inside the vault:
 .nav-folder-title[data-path^="wiki/questions"]   { color: var(--wiki-5); }
 .nav-folder-title[data-path^="wiki/comparisons"] { color: var(--wiki-6); }
 .nav-folder-title[data-path^="wiki/meta"]        { color: var(--wiki-7); }
+.nav-folder-title[data-path^="wiki/synthesis"]   { color: var(--wiki-8); }
 .nav-folder-title[data-path=".raw"]              { color: #808080; opacity: 0.6; }
 
 /* Custom callouts */
@@ -67,6 +69,8 @@ Guide the user to set these in Graph View settings (click the settings icon in t
 | `path:wiki/concepts` | Yellow (`#dcdcaa`) |
 | `path:wiki/sources` | Orange (`#ce9178`) |
 | `path:wiki/questions` | Green (`#6a9955`) |
+| `path:wiki/comparisons` | Red (`#d16969`) |
+| `path:wiki/synthesis` | Tan (`#d7ba7d`) |
 | `path:.raw` | Gray (dimmed) |
 
 ---
