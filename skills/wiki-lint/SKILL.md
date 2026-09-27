@@ -79,6 +79,34 @@ repair:
 Follow the [operation transaction contract](../wiki/references/operation-transactions.md).
 Lint itself never applies that transaction and never commits Git.
 
+### Cascade source removal
+
+When the user asks to remove a source's traces from the vault, plan the
+cascade before writing anything. The engine writes create-or-replace only, so
+"removal" of a canonical page is a tombstone (`status: deprecated` or
+`archived`), never a file deletion; `.raw/` captures and the ingestion
+manifest stay untouched by this workflow.
+
+1. Enumerate everything tied to the source: the source's summary page, pages
+   listing it in `sources:` (and in `related:`, `first_mentioned:`, or
+   `subjects:`), claim-ledger records citing it, and index/MOC entries
+   pointing at any of them.
+2. A page supported by other sources keeps existing. Replace it without the
+   dropped source reference and its exclusive prose, clearing or re-pointing
+   the `location.anchor` of claims whose anchored text the change removes.
+   Mark the source's ledger
+   record `rejected` or `superseded` rather than deleting it, and mark claims
+   exclusive to that source `deprecated` (or `unsupported` where no data
+   backs them). Remove any wikilinks or embeds the change strands.
+3. A page supported only by the removed source becomes a tombstone proposal:
+   `status: deprecated` (or `archived`) in the same bundle, with its claims
+   reassessed. Physical file deletion is the user's manual choice outside the
+   transaction system, followed by a fresh lint.
+4. Update index/MOC entries, `wiki/overview.md`, `wiki/hot.md`, both ledgers,
+   and the log in that one bundle so navigation and provenance stay
+   consistent.
+5. Re-run lint after the repair and report the remaining findings.
+
 ## Checkpoint
 
 Observe the deterministic report, think about root causes rather than finding

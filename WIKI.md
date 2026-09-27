@@ -253,7 +253,11 @@ canonical pages is a separate reviewed operation.
 Lint is deterministic and read-only. Report dead/ambiguous links, duplicate
 basenames, orphans, missing frontmatter, empty sections, stale index entries,
 configuration/read errors, and source/claim ledger contract violations. Repairs
-are separate transaction proposals.
+are separate transaction proposals. Cascade source removal follows the same
+rule: shared pages keep existing with only the dropped source reference
+removed, exclusively supported pages are tombstoned (`deprecated`/`archived`)
+rather than file-deleted, ledger records move to `rejected`/`superseded`, and
+indexes, overview, hot, the ledgers, and the log update in the same bundle.
 
 ## Safety and maintenance
 

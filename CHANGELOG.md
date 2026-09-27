@@ -9,6 +9,15 @@ implementation record for older releases.
 
 ### Added
 
+- Cascade source removal guidance in the lint skill (adapting llm_wiki's
+  shared-entity preservation, concept only): when removing a source's traces,
+  pages supported by other sources keep existing with only the dropped
+  reference and its exclusive claims removed; pages supported exclusively by
+  the removed source are tombstoned (`deprecated`/`archived`) in the same
+  bundle — the engine writes create-or-replace only, so physical file
+  deletion stays a manual user choice — and ledger records move to
+  `rejected`/`superseded` while indexes, `overview.md`, `hot.md`, both
+  ledgers, and the log update in that one reviewed bundle.
 - `wiki-graph`: read-only graph analytics for a vault, adapting the LLM Wiki
   pattern's analysis layer (concept only; stdlib implementation, no third-party
   dependency, no copied code). `scripts/graph-report.py` computes 4-signal page
