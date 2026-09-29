@@ -105,14 +105,23 @@ new immutable capture or an honest ledger update, not an overwrite.
    addresses. Request new addresses through `address_requests`; never call a
    counter allocator from a worker. File a cross-source theme as `synthesis`
    and a criteria-based contrast as `comparison` only when the evidence spans
-   multiple sources; otherwise reuse concept or source pages.
+multiple sources; otherwise reuse concept or source pages. Quality gate:
+before building the bundle, check every research/paper draft against the
+section skeleton in the worker contract (研究背景, 所研究的数学实体,
+新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题,
+与本库其他主题的关系 — or their localized equivalents); return incomplete
+drafts to the worker for at most one rework, and if the skeleton still
+cannot be satisfied because the payload lacks the content, report the named
+gaps to the user instead of retrying or inventing content.
 
 A source already present in the source ledger — content hash matching and at
 least one linked page — counts as ingested: the hash check (step 1) plus the
 ledger make re-ingestion a proposed skip with no new pages for that source,
-surfacing any pending review state, unless the user asks for re-analysis. A
-batch where every source is a skip needs no transaction; report the findings
-and stop.
+surfacing any pending review state, unless the user asks for re-analysis.
+Re-analysis reads the payload afresh; the existing page is used only to
+inherit identity frontmatter (address, source id, sha256, created) and is
+never a content source. A batch where every source is a skip needs no
+transaction; report the findings and stop.
 
 Parallel agents may fetch, inspect, and return drafts/evidence. They must not
 write vault files, reserve addresses, edit manifests, or update ledgers. Give

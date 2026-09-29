@@ -109,8 +109,40 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("active methodology index or MOC", ingest)
         self.assertIn("analysis pass", ingest)
         self.assertIn("proposed skip", ingest)
+        self.assertIn("Quality gate", ingest)
+        self.assertIn("never a content source", ingest)
         schema = (ROOT / "WIKI.md").read_text(encoding="utf-8")
         self.assertIn("active catalog or MOC", schema)
+
+    def test_claim_proposal_field_requirements_are_documented(self) -> None:
+        provenance = (ROOT / "skills/wiki/references/provenance.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Claim proposal field requirements", provenance)
+        self.assertIn("`normal` or `high`", provenance)
+        self.assertIn("never after the audit", provenance)
+        self.assertIn("`{path, anchor}`", provenance)
+        self.assertIn("fresh active supporting source", provenance)
+
+    def test_research_source_skeleton_is_consistent_across_files(self) -> None:
+        """The eight section names must appear in both the worker contract and
+        the orchestrator's quality gate — either copy drifting alone would
+        make the gate check headings the worker never writes."""
+        sections = (
+            "研究背景",
+            "所研究的数学实体",
+            "新颖点",
+            "主要结果（自然语言）",
+            "精确陈述与方法",
+            "总结",
+            "局限与未决问题",
+            "与本库其他主题的关系",
+        )
+        ingest_agent = (ROOT / "agents/wiki-ingest.md").read_text(encoding="utf-8")
+        ingest = (ROOT / "skills/wiki-ingest/SKILL.md").read_text(encoding="utf-8")
+        for name in sections:
+            self.assertIn(name, ingest_agent, name)
+            self.assertIn(name, ingest, name)
 
     def test_capability_scopes_match_skill_boundaries(self) -> None:
         document = json.loads(
@@ -189,6 +221,10 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("resumable intermediate", ingest_agent)
         self.assertIn("completed analysis from a previous dispatch", ingest_agent)
         self.assertIn("no-op packet", ingest_agent)
+        self.assertIn("Research-source page structure", ingest_agent)
+        self.assertIn("所研究的数学实体", ingest_agent)
+        self.assertIn("主要结果（自然语言）", ingest_agent)
+        self.assertIn("`normal` or `high` only", ingest_agent)
 
     def test_canvas_discloses_render_time_network_egress(self) -> None:
         skill = (ROOT / "skills/canvas/SKILL.md").read_text(encoding="utf-8")

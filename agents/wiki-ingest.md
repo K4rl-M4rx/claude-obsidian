@@ -99,6 +99,70 @@ mode router's documented read-only route command are allowed. Never run
 Write/Edit, transaction apply, migration apply, capture, lock helpers,
 checkpointing, Git mutations, or commands with remote egress.
 
+## Research-source page structure
+
+When a source page is proposed for a research/paper source, it must follow
+the following fixed section skeleton, in this order. Every section's content
+is grounded in the payload (the captured source file), via the analysis —
+never taken from a prior page, even when re-analyzing an already-ingested
+source (the prior page is inherited for identity frontmatter only). Section
+headings follow the vault's language convention; the canonical form:
+
+1. `## 研究背景` — motivation, what was already known (the prior-result
+   lineage), and the gap this paper fills; each statement carries a payload
+   locator.
+2. `## 所研究的数学实体` — the core mathematical entity the paper studies,
+   stated completely: what it is, the space/structure it lives on, key
+   parameters and hypotheses. For PDE/fluid papers this is the equation
+   system under study — domain, boundary conditions, parameters, function
+   spaces; when several models appear (rescaled, limiting, approximate), list
+   each and state how they relate. Equivalents in other fields: an operator
+   and its spectrum/resolvent, a function-space embedding, a Fourier
+   multiplier (analysis); a manifold with its metric under a geometric flow,
+   a minimal surface or harmonic map with its energy functional (geometry); a
+   group with its representation decomposition, a ring/module/ideal structure,
+   a cohomology ring (algebra); a space with the invariants under study, a
+   knot or link, a bordism class (topology).
+3. `## 新颖点` — three parts: novelty of the problem itself (first result,
+   first class of systems, new boundary conditions); novelty of the method
+   and technique (new estimates, transforms, frameworks); the difference from
+   the closest prior work — from the payload's contribution statements.
+4. `## 主要结果（自然语言）` — one plain-language paragraph per main theorem
+   ("the authors prove ..."), readable without introducing the notation.
+5. `## 精确陈述与方法` — the theorem-level statements with original numbering,
+   followed by the method and key-estimate chain, each estimate carrying its
+   equation/lemma locator.
+6. `## 总结` — three to five sentences: what was done, how, how strong the
+   result is, what remains open.
+7. `## 局限与未决问题`
+8. `## 与本库其他主题的关系`
+
+A draft missing a section, or whose entity section does not state the full
+model (domain, boundary conditions, parameters, function spaces), is
+incomplete: finish it before returning the packet. When the payload itself
+does not state an element (for example no explicit function space), record
+that honestly in the section instead of inventing it. Sources of other
+classes follow a type-appropriate structure instead; a source spanning
+several classes follows the structure of its dominant class. The analysis-
+before-drafting, locator-fidelity, and no-invention rules apply unchanged.
+
+Claim proposals must be field-complete at drafting time; the transaction
+core validates them mechanically and rejects the whole bundle otherwise:
+
+- `reviewed_at`: an ISO date; required for `accepted`; never after the audit
+  date (UTC — a local calendar date can sit ahead of it), and never earlier
+  than the supporting source's `retrieved_at`/`ingested_at`.
+- `risk`: `normal` or `high` only; there is no `low`.
+- `location`: `{path, anchor}` where the anchor is a heading or block that
+  exists in that page — checked against the prospective content when the
+  same bundle replaces the page.
+- `evidence`: an array of `{source_id, relation, locator}` objects; a bare
+  object or a string fails.
+- `accepted` requires at least one fresh active supporting source (additional
+  stale or inactive supporting sources do not block acceptance); high-risk
+  acceptance requires two independent sources (see
+  [the provenance contract](../skills/wiki/references/provenance.md)).
+
 ## Output
 
 Return a structured draft packet:

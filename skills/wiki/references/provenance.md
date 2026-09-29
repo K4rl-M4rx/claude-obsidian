@@ -48,6 +48,29 @@ Do not overload one ledger with all three jobs.
   than confident invention.
 - Never fabricate quotations, page numbers, dates, or evidence locators.
 
+## Claim proposal field requirements
+
+The transaction core validates the claim ledger mechanically; a proposal that
+violates any of these fails the whole bundle. Check them before drafting:
+
+- `reviewed_at`: an ISO date; required for `accepted`; never after the audit
+  date (UTC — a local calendar date can sit ahead of it), and never earlier
+  than the supporting source's `retrieved_at`/`ingested_at`.
+- `risk`: `normal` or `high` only. There is no `low`.
+- `location`: `{path, anchor}` where the anchor is a heading or block that
+  exists in that page — validated against the prospective content when the
+  same bundle replaces the page.
+- `evidence`: an array of `{source_id, relation, locator}` objects; a bare
+  object or a string fails.
+- `accepted` requires at least one fresh active supporting source (additional
+  stale or inactive supporting sources do not block acceptance): the source
+  must be `review_status: active`, non-synthetic, not stale by `refresh_due`,
+  and dated no later than the claim's `reviewed_at`.
+- High-risk `accepted` claims additionally need two independent sources:
+  distinct `independence_key` is necessary but not sufficient — the engine
+  also merges supporting sources that share a normalized origin or an
+  identical content hash.
+
 ## Migration
 
 Run migration as a dry-run first:

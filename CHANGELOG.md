@@ -54,6 +54,16 @@ implementation record for older releases.
 
 ### Changed
 
+- Research/paper source pages follow a fixed eight-section skeleton
+  (background, the mathematical entity under study, novelty, plain-language
+  main results, precise statements with methods, summary, limitations,
+   relations), and the ingest orchestrator runs a quality gate that returns
+  incomplete drafts before bundling. Re-analysis reads the payload afresh;
+  the prior page is inherited for identity frontmatter only. Claim proposals
+  must be field-complete at drafting time (UTC `reviewed_at`, the `risk`
+  enum, a `location` anchor that exists in the prospective page, array-shaped
+  `evidence`) — the requirements are documented in the provenance reference
+  where proposals are drafted.
 - `comparison` is now routable. It was already a valid frontmatter type but sat
   in `NON_ROUTABLE_TYPES` with no creation path, so a documented type could not
   be filed. It gains a `comparisons_folder` generic setting that defaults to
