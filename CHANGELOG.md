@@ -54,10 +54,12 @@ implementation record for older releases.
 
 ### Changed
 
-- Research/paper source pages follow a fixed eight-section skeleton
+- Research/paper source pages follow a fixed seven-section skeleton
   (background, the mathematical entity under study, novelty, plain-language
-  main results, precise statements with methods, summary, limitations,
-   relations), and the ingest orchestrator runs a quality gate that returns
+  main results, precise statements with methods, summary, limitations);
+  cross-source relationships stay in `related:` frontmatter and the index
+  rather than a body section. The ingest orchestrator runs a quality gate
+  that returns
   incomplete drafts before bundling. Re-analysis reads the payload afresh;
   the prior page is inherited for identity frontmatter only. Claim proposals
   must be field-complete at drafting time (UTC `reviewed_at`, the `risk`

@@ -135,7 +135,9 @@ headings follow the vault's language convention; the canonical form:
 6. `## 总结` — three to five sentences: what was done, how, how strong the
    result is, what remains open.
 7. `## 局限与未决问题`
-8. `## 与本库其他主题的关系`
+
+Cross-source relationships stay in the page's `related:` frontmatter and in
+`wiki/index.md`; the body does not restate them.
 
 A draft missing a section, or whose entity section does not state the full
 model (domain, boundary conditions, parameters, function spaces), is

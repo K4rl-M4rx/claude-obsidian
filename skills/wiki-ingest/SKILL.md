@@ -108,8 +108,8 @@ new immutable capture or an honest ledger update, not an overwrite.
 multiple sources; otherwise reuse concept or source pages. Quality gate:
 before building the bundle, check every research/paper draft against the
 section skeleton in the worker contract (研究背景, 所研究的数学实体,
-新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题,
-与本库其他主题的关系 — or their localized equivalents); return incomplete
+新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题
+— or their localized equivalents); return incomplete
 drafts to the worker for at most one rework, and if the skeleton still
 cannot be satisfied because the payload lacks the content, report the named
 gaps to the user instead of retrying or inventing content.

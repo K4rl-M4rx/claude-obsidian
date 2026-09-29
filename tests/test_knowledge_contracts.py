@@ -125,7 +125,7 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("fresh active supporting source", provenance)
 
     def test_research_source_skeleton_is_consistent_across_files(self) -> None:
-        """The eight section names must appear in both the worker contract and
+        """The seven section names must appear in both the worker contract and
         the orchestrator's quality gate — either copy drifting alone would
         make the gate check headings the worker never writes."""
         sections = (
@@ -136,13 +136,14 @@ class KnowledgeContractTests(unittest.TestCase):
             "精确陈述与方法",
             "总结",
             "局限与未决问题",
-            "与本库其他主题的关系",
         )
         ingest_agent = (ROOT / "agents/wiki-ingest.md").read_text(encoding="utf-8")
         ingest = (ROOT / "skills/wiki-ingest/SKILL.md").read_text(encoding="utf-8")
         for name in sections:
             self.assertIn(name, ingest_agent, name)
             self.assertIn(name, ingest, name)
+        self.assertNotIn("与本库其他主题的关系", ingest_agent)
+        self.assertNotIn("与本库其他主题的关系", ingest)
 
     def test_capability_scopes_match_skill_boundaries(self) -> None:
         document = json.loads(
