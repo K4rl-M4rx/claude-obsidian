@@ -40,6 +40,9 @@ source_type: article
 author: ""
 date_published: YYYY-MM-DD
 url: ""
+doi: ""
+arxiv_id: ""
+identifier_note: ""
 source_id: ""
 sha256: ""
 authority: unknown
@@ -49,7 +52,11 @@ key_claims:
   - "No claims extracted yet."
 ```
 
-Allowed authority values and evidence semantics are defined in
+`source_type: article` pages must carry a well-formed `doi` or `arxiv_id`;
+when the source has neither, set `identifier_note` to a short marker such as
+`none` (lint reports `source_identifier_issues` otherwise). Non-article
+source pages such as `source_type: manuscript` are exempt. Allowed authority
+values and evidence semantics are defined in
 [provenance.md](provenance.md). A missing value remains empty or `unknown`; do
 not manufacture metadata to complete a form.
 

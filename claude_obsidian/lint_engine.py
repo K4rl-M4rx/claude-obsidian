@@ -29,6 +29,13 @@ is reported. Only ``.gitignore`` files inside the vault root are consulted —
 never ``.git/info/exclude``, global excludes, or a ``git`` subprocess — so
 reports stay deterministic and process-free.
 
+The frontmatter audit also enforces the article-identifier policy: a page with
+``type: source`` and ``source_type: article`` must carry a ``doi`` or an
+``arxiv_id`` (format-checked), or mark the absence in ``identifier_note``
+(a short value such as ``none``). Non-article source pages (``manuscript``
+and similar) are exempt. Version 1 reports may gain new category keys over
+time; consumers should read categories by name rather than by exact key set.
+
 This module never creates directories or files. Even its command-line entry
 point writes only to stdout. Provenance freshness uses the explicit ``as_of``
 date when supplied and the current UTC calendar date otherwise.
@@ -59,8 +66,16 @@ from claude_obsidian.gitignore import GitignoreMatcher
 from claude_obsidian.json_utils import strict_json_loads
 
 REPORT_VERSION = 1
-ENGINE_VERSION = "1.1.1"
+ENGINE_VERSION = "1.2.0"
 REQUIRED_FRONTMATTER_FIELDS = ("title", "type", "status", "created", "updated", "tags")
+
+# Article source pages must carry a machine-resolvable identifier. A DOI is
+# ``10.<prefix>/<suffix>``; an arXiv id is either the post-2007 form
+# ``YYMM.NNNNN`` (optionally with a version suffix) or the legacy
+# ``archive/NNNNNNN`` form.
+_DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+_ARXIV_NEW_RE = re.compile(r"^\d{4}\.\d{4,5}(v\d+)?$")
+_ARXIV_OLD_RE = re.compile(r"^[a-z][a-z.-]*/\d{7}(v\d+)?$", re.IGNORECASE)
 
 # Obsidian resolves extensionless wikilinks to its note-like file types. Keep
 # this list deliberately narrow: arbitrary attachments are normally linked
@@ -100,6 +115,11 @@ _ALLOWLIST_KEYS = {
     "dead_links",
 }
 
+# Block-scalar indicators: a top-level key whose inline value is one of these
+# opens a block body, which the capture subset does not read — the captured
+# scalar is empty, matching the ``_Frontmatter.values`` contract.
+_BLOCK_SCALAR_INDICATORS = frozenset({"|", "|-", "|+", ">", ">-", ">+"})
+
 _TOP_LEVEL_YAML_KEY_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_-]*):(?:[ \t]*(.*))?$")
 _FENCE_OPEN_RE = re.compile(r"^[ ]{0,3}(`{3,}|~{3,})(?:[^\r\n]*)$")
 _ATX_HEADING_RE = re.compile(r"^[ \t]{0,3}(#{1,6})[ \t]+(.+?)[ \t]*$", re.MULTILINE)
@@ -120,6 +140,9 @@ class _Frontmatter:
     fields: frozenset[str]
     aliases: tuple[str, ...]
     end_offset: int
+    # Sorted ``(casefolded key, inline scalar value)`` pairs. Block and list
+    # bodies yield an empty value; only top-level inline scalars are captured.
+    values: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -195,6 +218,28 @@ def _unquote_yaml_scalar(value: str) -> str:
     return value
 
 
+def _strip_inline_comment(value: str) -> str:
+    """Drop a trailing ``# comment`` that sits outside quotes.
+
+    The capture subset does not otherwise know about comments, and an inline
+    comment would silently corrupt captured scalar values (for example a DOI
+    followed by ``# main paper``). A ``#`` only starts a comment at the start
+    of the value or after whitespace, and never inside quotes; ``#`` glued to
+    a bare word (``C#``) is left alone.
+    """
+
+    quote: str | None = None
+    for index, character in enumerate(value):
+        if quote is not None:
+            if character == quote:
+                quote = None
+        elif character in {"'", '"'}:
+            quote = character
+        elif character == "#" and (index == 0 or value[index - 1] in {" ", "\t"}):
+            return value[:index].rstrip()
+    return value
+
+
 def _split_inline_yaml_list(value: str) -> list[str]:
     value = value.strip()
     if not (value.startswith("[") and value.endswith("]")):
@@ -215,7 +260,7 @@ def _parse_frontmatter(text: str) -> _Frontmatter:
 
     offset = 1 if text.startswith("\ufeff") else 0
     if not text[offset:].startswith("---\n"):
-        return _Frontmatter(False, frozenset(), (), 0)
+        return _Frontmatter(False, frozenset(), (), 0, ())
 
     header_start = offset + 4
     cursor = header_start
@@ -238,12 +283,13 @@ def _parse_frontmatter(text: str) -> _Frontmatter:
         cursor = next_cursor
 
     if closing_start < 0:
-        return _Frontmatter(False, frozenset(), (), 0)
+        return _Frontmatter(False, frozenset(), (), 0, ())
 
     raw = text[header_start:closing_start]
     lines = raw.splitlines()
     fields: set[str] = set()
     aliases: list[str] = []
+    scalars: dict[str, str] = {}
     index = 0
     while index < len(lines):
         line = lines[index]
@@ -254,6 +300,10 @@ def _parse_frontmatter(text: str) -> _Frontmatter:
         key = match.group(1).casefold()
         value = (match.group(2) or "").strip()
         fields.add(key)
+        if value and value not in _BLOCK_SCALAR_INDICATORS:
+            scalars[key] = _unquote_yaml_scalar(_strip_inline_comment(value))
+        else:
+            scalars[key] = ""
         if key in {"alias", "aliases"}:
             if value:
                 aliases.extend(_split_inline_yaml_list(value))
@@ -273,7 +323,8 @@ def _parse_frontmatter(text: str) -> _Frontmatter:
         index += 1
 
     unique_aliases = tuple(sorted(set(aliases), key=_path_sort_key))
-    return _Frontmatter(True, frozenset(fields), unique_aliases, closing_end)
+    values = tuple(sorted(scalars.items()))
+    return _Frontmatter(True, frozenset(fields), unique_aliases, closing_end, values)
 
 
 def _mask_range(blocked: list[bool], start: int, end: int) -> None:
@@ -887,6 +938,56 @@ def _read_ledger(
     return payload, []
 
 
+def _source_identifier_issues(wiki_pages: Sequence[_Page]) -> list[dict[str, str]]:
+    """Enforce the article-identifier policy on ``type: source`` pages.
+
+    A page with ``source_type: article`` must carry a well-formed ``doi`` or
+    ``arxiv_id``; when the capture provides neither, the absence must be
+    marked with a short ``identifier_note`` value (for example ``none``).
+    Manuscript and other non-article source pages are exempt. Identifiers
+    are never inferred from page prose — only the frontmatter counts.
+    """
+
+    issues: list[dict[str, str]] = []
+    for page in wiki_pages:
+        if not page.frontmatter.present:
+            continue
+        values = dict(page.frontmatter.values)
+        if values.get("type", "").casefold() != "source":
+            continue
+        if values.get("source_type", "").casefold() != "article":
+            continue
+        doi = values.get("doi", "")
+        arxiv = values.get("arxiv_id", "")
+        note = values.get("identifier_note", "").strip()
+        if doi and not _DOI_RE.match(doi):
+            issues.append(
+                {
+                    "path": page.path,
+                    "field": "doi",
+                    "message": f"doi {_code(doi)} is not a valid DOI (expected 10.<prefix>/<suffix>)",
+                }
+            )
+        if arxiv and not (_ARXIV_NEW_RE.match(arxiv) or _ARXIV_OLD_RE.match(arxiv)):
+            issues.append(
+                {
+                    "path": page.path,
+                    "field": "arxiv_id",
+                    "message": f"arxiv_id {_code(arxiv)} is not a valid arXiv identifier",
+                }
+            )
+        if not doi and not arxiv and not note:
+            issues.append(
+                {
+                    "path": page.path,
+                    "field": "identifier_note",
+                    "message": "article source page has neither doi nor arxiv_id; record the absence and its reason in identifier_note",
+                }
+            )
+    issues.sort(key=_entry_sort_key)
+    return issues
+
+
 def _provenance_errors(root: Path, *, as_of: date) -> list[dict[str, str]]:
     """Validate source and claim ledgers without filesystem writes."""
 
@@ -1183,6 +1284,7 @@ def lint_vault(
     read_errors.sort(key=_entry_sort_key)
     configuration_errors.sort(key=_entry_sort_key)
     provenance_errors = _provenance_errors(vault_root, as_of=audit_date)
+    source_identifier_issues = _source_identifier_issues(wiki_pages)
 
     categories: dict[str, list[dict[str, Any]]] = {
         "dead_links": dead_links,
@@ -1191,6 +1293,7 @@ def lint_vault(
         "orphans": orphans,
         "missing_frontmatter": missing_frontmatter,
         "empty_sections": empty_sections,
+        "source_identifier_issues": source_identifier_issues,
         "stale_index_entries": stale_index_entries,
         "read_errors": read_errors,
         "configuration_errors": configuration_errors,
@@ -1300,6 +1403,13 @@ def render_markdown(report: dict[str, Any]) -> str:
             "empty_sections",
             lambda item: (
                 f"- {_code(item['path'])}:{item['line']}: {_code(item['heading'])}"
+            ),
+        ),
+        (
+            "Source Identifier Issues",
+            "source_identifier_issues",
+            lambda item: (
+                f"- {_code(item['path'])}: {_code(item['field'])}: {item['message']}"
             ),
         ),
         (

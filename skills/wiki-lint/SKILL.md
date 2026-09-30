@@ -45,7 +45,10 @@ indexer. Link resolution honors `.gitignore` files inside the vault (no `git`
 subprocess): when a link is ambiguous between a page and a gitignored file
 such as a build artifact, the gitignored candidate is dropped.
 It reports such categories as dead or ambiguous links, orphan pages, required
-frontmatter gaps (including `title`), empty sections, stale index entries, and
+frontmatter gaps (including `title`), empty sections, stale index entries,
+article source pages missing a DOI/arXiv identifier (or an explicit
+`identifier_note` absence record; non-article source pages such as
+`source_type: manuscript` are exempt), and
 source/claim ledger contract violations. Report only the
 checks and counts present in its output; do not claim that it performed
 semantic, stylistic, or prose-level contradiction analysis when it did

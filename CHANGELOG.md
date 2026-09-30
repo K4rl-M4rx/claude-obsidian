@@ -9,6 +9,16 @@ implementation record for older releases.
 
 ### Added
 
+- Article source identifier policy in the lint engine (1.1.1 → 1.2.0): a page
+  with `type: source` and `source_type: article` must carry a well-formed
+  `doi` or `arxiv_id` (post-2007 form with optional version, or legacy
+  archive id), or mark the absence with a short `identifier_note` value such
+  as `none`; non-article source pages (`manuscript` and similar) are exempt.
+  Reported as the new `source_identifier_issues` category (a report finding,
+  not a checkpoint gate). The frontmatter parser now captures inline scalar
+  values (with quote-aware inline-comment stripping) alongside field names.
+  `skills/wiki-ingest`, `skills/wiki-lint`, and
+  `skills/wiki/references/frontmatter.md` document the requirement.
 - Cascade source removal guidance in the lint skill (adapting llm_wiki's
   shared-entity preservation, concept only): when removing a source's traces,
   pages supported by other sources keep existing with only the dropped

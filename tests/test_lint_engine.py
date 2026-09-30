@@ -53,7 +53,7 @@ class LintEngineTests(unittest.TestCase):
 
     def test_report_schema_and_all_required_categories(self) -> None:
         self.assertEqual(1, self.report["version"])
-        self.assertEqual("1.1.1", self.report["engine_version"])
+        self.assertEqual("1.2.0", self.report["engine_version"])
         self.assertEqual(8, self.report["summary"]["pages_scanned"])
         self.assertEqual(18, self.report["summary"]["links_scanned"])
         for category in (
@@ -63,6 +63,7 @@ class LintEngineTests(unittest.TestCase):
             "orphans",
             "missing_frontmatter",
             "empty_sections",
+            "source_identifier_issues",
             "stale_index_entries",
             "read_errors",
             "configuration_errors",
@@ -956,6 +957,151 @@ class GitignoreDisambiguationTests(unittest.TestCase):
         )
         self.assertEqual([], report["ambiguous_targets"])
         self.assertEqual([], report["stale_index_entries"])
+
+
+class SourceIdentifierPolicyTests(unittest.TestCase):
+    """Article source pages must carry a DOI/arXiv id or an explicit absence
+    record (``identifier_note``), per the ingest frontmatter policy."""
+
+    def _report(self, frontmatter: str) -> dict:
+        with tempfile.TemporaryDirectory() as directory:
+            vault = Path(directory) / "vault"
+            (vault / "wiki" / "sources").mkdir(parents=True)
+            (vault / "wiki" / "sources" / "Paper.md").write_text(
+                frontmatter + "\n# Paper\n\nBody.\n",
+                encoding="utf-8",
+            )
+            return lint_engine.lint_vault(vault)
+
+    def _issues(self, frontmatter: str) -> list[dict]:
+        return self._report(frontmatter)["source_identifier_issues"]
+
+    def _article(self, extra: str) -> str:
+        return (
+            "---\n"
+            "type: source\n"
+            "source_type: article\n"
+            "title: Paper\n"
+            + extra
+            + "---\n"
+        )
+
+    def test_valid_doi_passes(self) -> None:
+        self.assertEqual([], self._issues(self._article("doi: 10.1016/j.jde.2023.06.042\n")))
+
+    def test_valid_arxiv_id_passes(self) -> None:
+        for identifier in (
+            "arxiv_id: 2507.10032\n",
+            "arxiv_id: 2507.10032v2\n",
+            "arxiv_id: math.AP/0701234\n",
+            "arxiv_id: math/0701234v2\n",
+        ):
+            with self.subTest(identifier=identifier):
+                self.assertEqual([], self._issues(self._article(identifier)))
+
+    def test_doi_and_arxiv_id_together_pass(self) -> None:
+        frontmatter = self._article(
+            "doi: 10.1016/j.jde.2023.06.042\narxiv_id: 2507.10032\n"
+        )
+        self.assertEqual([], self._issues(frontmatter))
+
+    def test_explicit_absence_record_passes(self) -> None:
+        frontmatter = self._article("identifier_note: none\n")
+        self.assertEqual([], self._issues(frontmatter))
+
+    def test_missing_identifier_and_record_is_flagged(self) -> None:
+        issues = self._issues(self._article(""))
+        self.assertEqual(1, len(issues))
+        self.assertEqual("identifier_note", issues[0]["field"])
+
+    def test_blank_identifier_note_is_flagged(self) -> None:
+        for note in ('identifier_note: ""\n', "identifier_note:\n", "identifier_note:    \n", "identifier_note: ' '\n"):
+            with self.subTest(note=note):
+                issues = self._issues(self._article(note))
+                self.assertEqual(1, len(issues))
+                self.assertEqual("identifier_note", issues[0]["field"])
+
+    def test_block_scalar_indicator_is_treated_as_empty_value(self) -> None:
+        issues = self._issues(self._article("doi: |\n"))
+        self.assertEqual(1, len(issues))
+        self.assertEqual("identifier_note", issues[0]["field"])
+
+    def test_malformed_identifiers_are_flagged(self) -> None:
+        issues = self._issues(self._article("doi: 12.3456/not-a-doi\narxiv_id: notanarxiv\n"))
+        self.assertEqual(
+            {"doi", "arxiv_id"}, {issue["field"] for issue in issues}
+        )
+
+    def test_single_malformed_doi_flags_only_the_doi(self) -> None:
+        issues = self._issues(self._article("doi: 12.3456/not-a-doi\n"))
+        self.assertEqual(1, len(issues))
+        self.assertEqual("doi", issues[0]["field"])
+
+    def test_malformed_sibling_does_not_mask_valid_identifier(self) -> None:
+        issues = self._issues(
+            self._article("doi: 12.3456/not-a-doi\narxiv_id: 2507.10032\n")
+        )
+        self.assertEqual(["doi"], [issue["field"] for issue in issues])
+        mirrored = self._issues(
+            self._article("doi: 10.1016/j.jde.2023.06.042\narxiv_id: notanarxiv\n")
+        )
+        self.assertEqual(["arxiv_id"], [issue["field"] for issue in mirrored])
+
+    def test_inline_comment_is_stripped_from_scalars(self) -> None:
+        frontmatter = self._article(
+            "doi: 10.1016/j.jde.2023.06.042 # main paper\n"
+        )
+        self.assertEqual([], self._issues(frontmatter))
+
+    def test_inline_comment_cannot_bypass_the_policy(self) -> None:
+        frontmatter = (
+            "---\n"
+            "type: source  # main\n"
+            "source_type: article  # math\n"
+            "title: Paper\n"
+            "---\n"
+        )
+        issues = self._issues(frontmatter)
+        self.assertEqual(1, len(issues))
+        self.assertEqual("identifier_note", issues[0]["field"])
+
+    def test_non_article_source_pages_are_exempt(self) -> None:
+        for source_type in ("book", "manuscript"):
+            with self.subTest(source_type=source_type):
+                frontmatter = (
+                    "---\n"
+                    "type: source\n"
+                    f"source_type: {source_type}\n"
+                    "title: Item\n"
+                    "---\n"
+                )
+                self.assertEqual([], self._issues(frontmatter))
+
+    def test_source_type_missing_is_exempt(self) -> None:
+        frontmatter = "---\ntype: source\ntitle: Paper\n---\n"
+        self.assertEqual([], self._issues(frontmatter))
+
+    def test_page_without_frontmatter_is_exempt(self) -> None:
+        self.assertEqual([], self._issues("# Paper\n\nBody without frontmatter.\n"))
+
+    def test_type_case_and_quoting_are_normalized(self) -> None:
+        frontmatter = (
+            "---\n"
+            "type: \"Source\"\n"
+            "source_type: \"Article\"\n"
+            "title: Paper\n"
+            "doi: \"10.4007/annals.2007.166.245\"\n"
+            "---\n"
+        )
+        self.assertEqual([], self._issues(frontmatter))
+
+    def test_render_markdown_renders_identifier_issues(self) -> None:
+        report = self._report(self._article("arxiv_id: notanarxiv\n"))
+        markdown = lint_engine.render_markdown(report)
+        self.assertIn("## Source Identifier Issues", markdown)
+        self.assertIn("wiki/sources/Paper.md", markdown)
+        self.assertIn("arxiv_id", markdown)
+        self.assertIn("is not a valid arXiv identifier", markdown)
 
 
 if __name__ == "__main__":

@@ -91,6 +91,20 @@ new immutable capture or an honest ledger update, not an overwrite.
    code-spans for literal code, CLI flags, and exact identifiers, not for
    citable URLs. This guidance applies only to narrative prose; ledger and
    manifest locator fields keep the raw URL string.
+   Article-type sources (`source_type: article`) must carry a machine-resolvable
+   identifier in frontmatter: a `doi` (form `10.<prefix>/<suffix>`) or an
+   `arxiv_id` (post-2007 `YYMM.<serial>` with optional `vN`, or a legacy
+   archive id such as `math.AP/0701234`). Record an identifier only when the
+   capture confirms it or the user verifies it; never fabricate one. When the
+   capture provides neither, mark the absence with a short `identifier_note`
+   value such as `none` — a word or phrase, not prose. Lint enforces the
+   identifier-or-absence-record requirement (`source_identifier_issues`);
+   it does not judge brevity or provenance, and it is a report finding, not
+   a checkpoint gate.
+   `source_type: manuscript` denotes unpublished manuscripts, drafts, lecture
+   notes, and similar identifier-less documents. Non-article source pages
+   (manuscript and similar) are exempt from the identifier requirement and
+   need no `identifier_note`.
 7. Run the analysis pass before drafting pages: compile one structured
    per-source analysis — extracted entities, concepts, falsifiable claims,
    contradictions against existing pages, cross-source synthesis and
