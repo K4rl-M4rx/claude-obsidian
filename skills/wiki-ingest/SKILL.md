@@ -106,9 +106,10 @@ new immutable capture or an honest ledger update, not an overwrite.
    (manuscript and similar) are exempt from the identifier requirement and
    need no `identifier_note`.
 7. Run the analysis pass before drafting pages: compile one structured
-   per-source analysis — extracted entities, concepts, falsifiable claims,
-   contradictions against existing pages, cross-source synthesis and
-   comparison opportunities, and the proposed page plan with types. Present
+   per-source analysis — extracted entities, structured concept candidates,
+   falsifiable claims, contradictions against existing pages, cross-source
+   synthesis and comparison opportunities, and the proposed page plan with
+   types. Present
    each source's analysis alongside its proposed pages when previewing the
    operation for approval, so the reviewable reasoning is visible before
    anything is applied; if the user objects to the analysis, re-draft from
@@ -119,11 +120,39 @@ new immutable capture or an honest ledger update, not an overwrite.
    addresses. Request new addresses through `address_requests`; never call a
    counter allocator from a worker. File a cross-source theme as `synthesis`
    and a criteria-based contrast as `comparison` only when the evidence spans
-multiple sources; otherwise reuse concept or source pages. Quality gate:
+multiple sources; otherwise reuse concept or source pages. Merge the
+workers' concept candidates into one batch concept plan before drafting:
+dedup pairwise and against existing concept pages by comparing names and
+aliases after casefolding and stripping whitespace and punctuation — CJK
+canonical names included — reading aliases from the concept pages'
+frontmatter, not only from the index. Mint a `concept` page for every
+concept shared by two or more in-scope sources — counting uses on
+already-ledgered source pages, confirmable with one vault search — and
+for a single-source concept whenever recurrence is plausible; when in
+doubt, mint. The orchestrator drafts each concept page directly, without
+dispatching a worker: a `status: seed` stub of one grounded definition
+paragraph — the concept as these sources use it, key formula and locator
+per source — ending with pointers to those source pages for the exact
+forms; no fixed section skeleton. Frontmatter follows the common
+properties in
+[the frontmatter conventions](../wiki/references/frontmatter.md)
+with `status: seed`; `sources:` lists exactly the source pages of this
+bundle that link the page — never a page listed only to balance the
+graph. Later batches that meet the concept again append one sentence per
+source and may advance `seed` to `developing`; other status changes
+belong to the user. Source pages drafted in this bundle link the concepts
+they use in the body — workers write the links optimistically and the
+orchestrator reconciles their targets to the merged plan's final names;
+a navigation link, not one of the cross-source relationships that stay in
+`related:` — and the index's concept section updates in the same bundle.
+Adding concept links to sources already in the ledger is a separate
+link-only backfill bundle (replace against each page's current SHA-256),
+never part of a normal ingest. Quality gate:
 before building the bundle, check every research/paper draft against the
 section skeleton in the worker contract (研究背景, 所研究的数学实体,
 新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题
-— or their localized equivalents); return incomplete
+— or their localized equivalents);
+return incomplete
 drafts to the worker for at most one rework, and if the skeleton still
 cannot be satisfied because the payload lacks the content, report the named
 gaps to the user instead of retrying or inventing content.

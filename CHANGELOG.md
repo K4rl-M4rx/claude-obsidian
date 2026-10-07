@@ -9,6 +9,20 @@ implementation record for older releases.
 
 ### Added
 
+- Concept stage in the ingest flow: workers list the concepts a source
+  substantially uses as structured candidates (canonical name, aliases,
+  one-line definition with the key formula and a real locator) and write
+  them into drafted pages as `[[...]]` links; the orchestrator merges the
+  candidates into one batch concept plan — deduped pairwise and against
+  existing concept pages by casefolded, whitespace-and-punctuation-stripped
+  names and aliases (CJK included) — and mints a `status: seed` concept
+  page for every concept shared by two or more in-scope sources (counting
+  already-ledgered pages) or plausibly recurring, drafting it directly as a
+  one-paragraph grounded stub with no fixed skeleton. Source pages link the
+  concepts they use in the body and the index's concept section updates in
+  the same bundle; later batches append to the page and may advance `seed`
+  to `developing`, and concept links for sources already in the ledger go
+  through a separate link-only backfill bundle.
 - Article source identifier policy in the lint engine (1.1.1 → 1.2.0): a page
   with `type: source` and `source_type: article` must carry a well-formed
   `doi` or `arxiv_id` (post-2007 form with optional version, or legacy

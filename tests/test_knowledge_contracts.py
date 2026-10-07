@@ -145,6 +145,17 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertNotIn("与本库其他主题的关系", ingest_agent)
         self.assertNotIn("与本库其他主题的关系", ingest)
 
+    def test_concept_flow_survives_across_files(self) -> None:
+        """Two batches once produced zero concept pages because no stage
+        owned them: workers must list concept candidates and the
+        orchestrator must mint and index seed pages — either half silently
+        disappearing brings the original failure back."""
+        ingest_agent = (ROOT / "agents/wiki-ingest.md").read_text(encoding="utf-8")
+        ingest = (ROOT / "skills/wiki-ingest/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("concepts:\n    - name:", ingest_agent)
+        self.assertIn("batch concept plan", ingest)
+        self.assertIn("status: seed", ingest)
+
     def test_capability_scopes_match_skill_boundaries(self) -> None:
         document = json.loads(
             (ROOT / "config/capabilities.json").read_text(encoding="utf-8")

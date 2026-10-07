@@ -73,11 +73,16 @@ invoke a network client, or substitute another source.
      least two existing or newly proposed pages, where the source's evidence
      supports the criteria and each cell cites a source-relative locator.
      A passing mention of two names is not a comparison.
+   - List in the analysis every named concept — a method, mechanism,
+     functional, threshold, or structure — that this source substantially
+     uses rather than merely mentions; do not judge whether it earns a
+     page, the orchestrator decides that from the merged batch. Write the
+     concepts you listed in drafted pages as `[[<canonical-name>]]` links.
 7. Draft in two phases. Phase one is the analysis: compile the structured
    per-source analysis defined in the output schema — extracted entities,
-   concepts, falsifiable claims, contradictions with existing pages,
-   cross-source synthesis and comparison opportunities, and the proposed page
-   plan — and finish it before drafting any page. If the parent provides a
+   structured concept candidates, falsifiable claims, contradictions with
+   existing pages, cross-source synthesis and comparison opportunities, and
+   the proposed page plan — and finish it before drafting any page. If the parent provides a
    completed analysis from a previous dispatch — partial, or corrected after
    review — skip phase one and
    draft from it as given, re-reading only the locator ranges needed for
@@ -178,7 +183,11 @@ source:
   title: <title>
 analysis:
   entities: [<named entities worth pages or merges>]
-  concepts: [<concepts worth pages or merges>]
+  concepts:
+    - name: <canonical name in the vault's language>
+      aliases: [<original-language terms>]
+      definition: <one line, how this source uses it, with the key
+        formula and a real locator>
   claims: [<falsifiable claims with real locators>]
   conflicts: [<contradictions with existing pages or claims, or none>]
   cross_source: [<synthesis/comparison opportunities naming their supporting pages, or none>]
