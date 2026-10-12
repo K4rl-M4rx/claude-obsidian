@@ -56,6 +56,10 @@ values and evidence semantics are defined in
 [provenance.md](provenance.md). A missing value remains empty or `unknown`; do
 not manufacture metadata to complete a form.
 
+Frontmatter carries identity and provenance only; a source page's
+mathematical content — key theorems, estimates, and their locators — lives
+in its body sections.
+
 ## Other type-specific properties
 
 ```yaml

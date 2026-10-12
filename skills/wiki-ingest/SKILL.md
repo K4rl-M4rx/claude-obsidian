@@ -151,7 +151,9 @@ a navigation link, not one of the cross-source relationships that stay in
 `related:` — and the index's concept section updates in the same bundle.
 Adding concept links to sources already in the ledger is a separate
 link-only backfill bundle (replace against each page's current SHA-256),
-never part of a normal ingest. Quality gate:
+never part of a normal ingest. Frontmatter on source pages carries identity
+and provenance fields only; the page's mathematical content — key theorems,
+estimates, and their locators — lives in the body sections. Quality gate:
 before building the bundle, check every research/paper draft against the
 section skeleton in the worker contract (摘要, 研究背景, 所研究的数学实体,
 新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题

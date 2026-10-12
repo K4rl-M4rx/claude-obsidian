@@ -117,6 +117,9 @@ is grounded in the payload (the captured source file), via the analysis —
 never taken from a prior page, even when re-analyzing an already-ingested
 source (the prior page is inherited for identity frontmatter only). Section
 headings follow the vault's language convention; the canonical form:
+the frontmatter carries identity and provenance fields only, and the page's
+mathematical content — key theorems, estimates, and their locators — lives
+in these body sections:
 
 1. `## 摘要` — for `source_type: article`, a faithful Chinese rendering of
    the payload's own abstract; supplements are allowed only as a separate
