@@ -50,7 +50,8 @@ vault and user-provided sources and label that boundary.
 
 ## Run a draft-only research loop
 
-1. Read `wiki/hot.md`, `wiki/index.md`, source and claim ledgers, and a bounded
+1. Read `wiki/hot.md`, `wiki/index.md`, the source ledger (and any surviving
+   legacy claim-ledger records), and a bounded
    set of relevant pages. Identify what is already known and what would change it.
 2. Decompose the topic into distinct questions, including a plausible
    counter-position.
@@ -89,7 +90,7 @@ The dossier operation may couple:
 
 - immutable, create-only text captures that were actually obtained;
 - cited source pages and one research synthesis/dossier;
-- source and claim ledger updates;
+- source ledger updates (the claim ledger is retired — legacy records only);
 - manifest and address requests;
 - index, log, and hot-cache changes required to expose the dossier.
 

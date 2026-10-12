@@ -69,7 +69,8 @@ See [wiki-retrieve](../wiki-retrieve/SKILL.md) for cache and rerank behavior and
 
 ## Assess evidence
 
-Read `wiki/meta/ledgers/claim-ledger.json` and
+Read `wiki/meta/ledgers/claim-ledger.json` (retired — legacy records only,
+empty in current vaults) and
 `wiki/meta/ledgers/source-ledger.json` when they cover the answer. Apply the
 [evidence and provenance rules](../wiki/references/provenance.md):
 

@@ -26,7 +26,8 @@ invent content; record skipped questions and stop.
 
 ## Evidence assessment
 
-Use the source and claim ledgers, not a prose confidence label alone.
+Use the source ledger (and any surviving legacy claim-ledger records), not a
+prose confidence label alone.
 
 - `accepted`: supported by at least one fresh, active, non-synthetic source.
 - High-risk accepted claims: supported by two independent sources.

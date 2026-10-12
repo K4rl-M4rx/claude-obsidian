@@ -78,6 +78,10 @@ invoke a network client, or substitute another source.
      uses rather than merely mentions; do not judge whether it earns a
      page, the orchestrator decides that from the merged batch. Write the
      concepts you listed in drafted pages as `[[<canonical-name>]]` links.
+     A candidate that is a reusable way of doing things — a proof
+     technique, a construction, a method of estimates — files as
+     `type: method`; everything else files as `concept`.
+     Either way you only list and link; the orchestrator decides.
 7. Draft in two phases. Phase one is the analysis: compile the structured
    per-source analysis defined in the output schema — extracted entities,
    structured concept candidates, falsifiable claims, contradictions with
@@ -95,9 +99,10 @@ invoke a network client, or substitute another source.
 8. For every proposed target, read its current bytes and return its expected
    SHA-256; use `null` only for a verified absent path. Draft complete proposed
    content or a precise patch that the parent can merge without guessing.
-9. Return source-ledger and claim-ledger proposals, including independence and
-   freshness status when the available evidence supports them. Flag conflicts
-   rather than silently resolving them.
+9. Return source-ledger proposals, including independence and freshness
+   status when the available evidence supports them. Claim-ledger proposals
+   are retired: do not register claims (see the retirement note under the
+   section skeleton). Flag conflicts rather than silently resolving them.
 
 Safe local read-only shell commands such as `sha256sum`, `git grep`, or the
 mode router's documented read-only route command are allowed. Never run
@@ -113,10 +118,17 @@ never taken from a prior page, even when re-analyzing an already-ingested
 source (the prior page is inherited for identity frontmatter only). Section
 headings follow the vault's language convention; the canonical form:
 
-1. `## 研究背景` — motivation, what was already known (the prior-result
+1. `## 摘要` — for `source_type: article`, a faithful Chinese rendering of
+   the payload's own abstract; supplements are allowed only as a separate
+   sentence beginning 「补充：」. When the captured abstract is OCR-damaged,
+   say so and complete it from the body. For non-article sources or payloads
+   without an abstract, write a self-standing abstract from the body
+   (roughly 150–300 characters). It mirrors the article's abstract; it does
+   not replace the later sections.
+2. `## 研究背景` — motivation, what was already known (the prior-result
    lineage), and the gap this paper fills; each statement carries a payload
    locator.
-2. `## 所研究的数学实体` — the core mathematical entity the paper studies,
+3. `## 所研究的数学实体` — the core mathematical entity the paper studies,
    stated completely: what it is, the space/structure it lives on, key
    parameters and hypotheses. For PDE/fluid papers this is the equation
    system under study — domain, boundary conditions, parameters, function
@@ -128,18 +140,18 @@ headings follow the vault's language convention; the canonical form:
    group with its representation decomposition, a ring/module/ideal structure,
    a cohomology ring (algebra); a space with the invariants under study, a
    knot or link, a bordism class (topology).
-3. `## 新颖点` — three parts: novelty of the problem itself (first result,
+4. `## 新颖点` — three parts: novelty of the problem itself (first result,
    first class of systems, new boundary conditions); novelty of the method
    and technique (new estimates, transforms, frameworks); the difference from
    the closest prior work — from the payload's contribution statements.
-4. `## 主要结果（自然语言）` — one plain-language paragraph per main theorem
+5. `## 主要结果（自然语言）` — one plain-language paragraph per main theorem
    ("the authors prove ..."), readable without introducing the notation.
-5. `## 精确陈述与方法` — the theorem-level statements with original numbering,
+6. `## 精确陈述与方法` — the theorem-level statements with original numbering,
    followed by the method and key-estimate chain, each estimate carrying its
    equation/lemma locator.
-6. `## 总结` — three to five sentences: what was done, how, how strong the
+7. `## 总结` — three to five sentences: what was done, how, how strong the
    result is, what remains open.
-7. `## 局限与未决问题`
+8. `## 局限与未决问题`
 
 Cross-source relationships stay in the page's `related:` frontmatter and in
 `wiki/index.md`; the body does not restate them.
@@ -153,22 +165,11 @@ classes follow a type-appropriate structure instead; a source spanning
 several classes follows the structure of its dominant class. The analysis-
 before-drafting, locator-fidelity, and no-invention rules apply unchanged.
 
-Claim proposals must be field-complete at drafting time; the transaction
-core validates them mechanically and rejects the whole bundle otherwise:
-
-- `reviewed_at`: an ISO date; required for `accepted`; never after the audit
-  date (UTC — a local calendar date can sit ahead of it), and never earlier
-  than the supporting source's `retrieved_at`/`ingested_at`.
-- `risk`: `normal` or `high` only; there is no `low`.
-- `location`: `{path, anchor}` where the anchor is a heading or block that
-  exists in that page — checked against the prospective content when the
-  same bundle replaces the page.
-- `evidence`: an array of `{source_id, relation, locator}` objects; a bare
-  object or a string fails.
-- `accepted` requires at least one fresh active supporting source (additional
-  stale or inactive supporting sources do not block acceptance); high-risk
-  acceptance requires two independent sources (see
-  [the provenance contract](../skills/wiki/references/provenance.md)).
+Claim proposals are retired (2026-10-10): the claim ledger was emptied and
+new ingests register no claim entries. The analysis's `claims:` array stays
+a drafting input for the 主要结果 and 精确陈述与方法 sections and must not
+be turned into ledger records. The retired field contract survives as
+reference in [the provenance contract](../skills/wiki/references/provenance.md).
 
 ## Output
 
@@ -188,7 +189,7 @@ analysis:
       aliases: [<original-language terms>]
       definition: <one line, how this source uses it, with the key
         formula and a real locator>
-  claims: [<falsifiable claims with real locators>]
+  claims: [<falsifiable claims with real locators; drafting input only, never registered>]
   conflicts: [<contradictions with existing pages or claims, or none>]
   cross_source: [<synthesis/comparison opportunities naming their supporting pages, or none>]
   page_plan: [<proposed targets with types and why>]

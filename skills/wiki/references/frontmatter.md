@@ -19,8 +19,6 @@ related:
   - "[[Related page]]"
 sources:
   - "[[Source page]]"
-claim_ids:
-  - claim-example
 ---
 ```
 
@@ -48,8 +46,6 @@ sha256: ""
 authority: unknown
 independence_key: ""
 review_state: unreviewed
-key_claims:
-  - "No claims extracted yet."
 ```
 
 `source_type: article` pages must carry a well-formed `doi` or `arxiv_id`;
@@ -93,6 +89,10 @@ assessment: unsupported
 risk: low
 ```
 
+# method
+
+No type-specific properties beyond the common set.
+
 ## Rules
 
 1. Keep generated properties flat; do not introduce nested mappings.
@@ -103,7 +103,8 @@ risk: low
    `related` and `sources` relationships.
 6. Update `updated` only when the page content or assessed state changes.
 7. Preserve unknown valid properties during an edit.
-8. Do not treat a frontmatter confidence label as evidence; the claim ledger
-   and linked active sources determine support.
+8. Do not treat a frontmatter confidence label as evidence; linked active
+   sources determine support. The claim ledger is retired (emptied
+   2026-10-10) and receives no new entries.
 9. Quote numeric-only tag values, for example `- "2026"`, so their YAML type
    remains text.

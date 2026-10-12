@@ -12,6 +12,7 @@ MODE_FOLDER_KEYS = {
         "sources_folder",
         "entities_folder",
         "concepts_folder",
+        "methods_folder",
         "sessions_folder",
         "questions_folder",
         "comparisons_folder",

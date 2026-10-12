@@ -93,7 +93,8 @@ in that bundle; update the overview only when the stable high-level picture
 changed. Raw source payloads are create-only. There are no automatic commits.
 
 Use [provenance.md](references/provenance.md) when initializing or changing
-source and claim ledgers. Unsupported evidence stays unsupported; never invent a
+the source ledger (the claim ledger is retired — legacy records only).
+Unsupported evidence stays unsupported; never invent a
 source, quote, date, locator, or confidence.
 
 After a successful apply, report the operation ID and exact changed paths. If the

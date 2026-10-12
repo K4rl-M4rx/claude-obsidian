@@ -46,9 +46,9 @@ selected vault's `wiki/` directory.
 4. Select the smallest useful note type from the declared vocabulary
    (`claude_obsidian/page_schema.py`, documented in WIKI.md) — usually
    `question` for an answered analysis, `concept` for an idea worth naming,
-   `source` for material summary, `comparison` for a criteria-based contrast,
-   `synthesis` for a cross-source theme, or `session` for approved conversation
-   content. Use declarative prose, Obsidian wikilinks, and honest frontmatter.
+   `method` for a reusable technique, `source` for material summary,
+   `comparison` for a criteria-based contrast, `synthesis` for a cross-source
+   theme, or `session` for approved conversation content. Use declarative prose, Obsidian wikilinks, and honest frontmatter.
 
 If the material has no durable value or is already represented, report that and
 offer a no-op. Honor the user's choice if they still want it saved.
@@ -56,8 +56,9 @@ offer a no-op. Honor the user's choice if they still want it saved.
 ## Preserve evidence honestly
 
 Read [the provenance contract](../wiki/references/provenance.md) when the note
-contains externally verifiable claims. Update the source and claim ledgers in the
-same transaction when their records change. Conversation assertions are not
+contains externally verifiable claims. Update the source ledger in the same
+transaction when its records change; the claim ledger is retired (legacy
+records only, no new registrations). Conversation assertions are not
 independent evidence; classify them as synthetic or unsupported/provisional as
 appropriate. They cannot alone make a claim `accepted`.
 
@@ -74,7 +75,8 @@ Draft all changes before touching vault state. A complete Save normally couples:
 - `wiki/index.md` or the active methodology index;
 - one new top-of-file entry in `wiki/log.md`;
 - a refreshed `wiki/hot.md` under 500 words;
-- source or claim ledger updates only when evidence changed.
+- source ledger updates only when evidence changed (the claim ledger is
+  retired — legacy records only).
 
 Every canonical page create or removal must update at least one active index or
 MOC in this bundle. Update `wiki/index.md` only when it is that active catalog.

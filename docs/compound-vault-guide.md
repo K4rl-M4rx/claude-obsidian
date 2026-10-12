@@ -39,8 +39,9 @@ source URLs. Existing vaults should adopt the same default deliberately without
 overwriting their current ignore policy.
 
 `wiki/hot.md` is a bounded context cache, not a transcript. `wiki/log.md`
-records completed operations. Source and claim ledgers keep provenance separate
-from legacy delta tracking.
+records completed operations. The source ledger keeps provenance separate
+from legacy delta tracking; the claim ledger is retired (legacy records
+only).
 
 ## One operation, one transaction
 
@@ -130,7 +131,8 @@ alone.
 ## Evidence
 
 The source ledger records content identity, authority, independence, freshness,
-review state, and linked pages. The claim ledger records falsifiable claims,
+review state, and linked pages. The claim ledger is retired (legacy records
+only, no new registrations); when present it records falsifiable claims,
 support, contradictions, confidence, risk, and assessment.
 
 - Accepted claims need current active non-synthetic support.

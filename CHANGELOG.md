@@ -9,6 +9,17 @@ implementation record for older releases.
 
 ### Added
 
+- `method` page type for reusable ways of doing things — proof techniques,
+  constructions, operators, methods of estimates — distinct from `concept`
+  (a thing, phenomenon, or structure). It is routable: the generic mode
+  gains a `methods_folder` setting defaulting to `wiki/methods/` (arriving
+  through the default-config merge, no existing-vault migration), the para
+  mode routes it under `resources/methods/`, and the wiki-mode router maps
+  it accordingly. The ingest concept stage splits at minting time — a
+  thing/phenomenon/structure files as `concept`, a reusable way of doing
+  things files as `type: method` — and method pages grow under the same
+  prompt-level guidance with a recipe-oriented bar (what problem it solves,
+  core idea, applicability conditions, operational steps, failure modes).
 - Concept stage in the ingest flow: workers list the concepts a source
   substantially uses as structured candidates (canonical name, aliases,
   one-line definition with the key formula and a real locator) and write
@@ -23,6 +34,20 @@ implementation record for older releases.
   the same bundle; later batches append to the page and may advance `seed`
   to `developing`, and concept links for sources already in the ledger go
   through a separate link-only backfill bundle.
+- Concept growth guidance in the ingest skill: concept pages grow from
+  `seed` toward `developing` with **no fixed section skeleton** — section
+  organization follows the nature of the concept, and the quality bar
+  (essence first with one canonical formula or toy model, a short list of
+  concept-shaping key results — 3–6, at most 8 — each with a real locator,
+  concrete cross-topic connections as the exit point for detail, open
+  problems and not-yet-ingested territory) is carried as prompt-level
+  guidance rather than a structure gate: a concept page is a map, not a
+  dictionary. Ten concept pages from
+  an earlier user vault ship under
+  `skills/wiki-ingest/references/concept-exemplars/` as read-only style-and-
+  depth exemplars (a same-topic exemplar may seed a growth pass as source
+  material): they belong to no vault, are never linked from wiki pages,
+  and never enter any graph or ledger.
 - Article source identifier policy in the lint engine (1.1.1 → 1.2.0): a page
   with `type: source` and `source_type: article` must carry a well-formed
   `doi` or `arxiv_id` (post-2007 form with optional version, or legacy
@@ -78,18 +103,20 @@ implementation record for older releases.
 
 ### Changed
 
-- Research/paper source pages follow a fixed seven-section skeleton
-  (background, the mathematical entity under study, novelty, plain-language
-  main results, precise statements with methods, summary, limitations);
-  cross-source relationships stay in `related:` frontmatter and the index
-  rather than a body section. The ingest orchestrator runs a quality gate
-  that returns
+- Research/paper source pages follow a fixed eight-section skeleton
+  (abstract, background, the mathematical entity under study, novelty,
+  plain-language main results, precise statements with methods, summary,
+  limitations); the abstract faithfully renders the payload's own abstract
+  for articles and is self-written for sources without one; cross-source
+  relationships stay in `related:` frontmatter and the index rather than a
+  body section. The ingest orchestrator runs a quality gate that returns
   incomplete drafts before bundling. Re-analysis reads the payload afresh;
-  the prior page is inherited for identity frontmatter only. Claim proposals
-  must be field-complete at drafting time (UTC `reviewed_at`, the `risk`
-  enum, a `location` anchor that exists in the prospective page, array-shaped
-  `evidence`) — the requirements are documented in the provenance reference
-  where proposals are drafted.
+  the prior page is inherited for identity frontmatter only.
+- The `key_claims` frontmatter field is removed from the source-page
+  template, and the claim ledger is retired: the ingest flow no longer
+  registers claim entries (the analysis's `claims:` array remains a drafting
+  input), and the field contract survives in the provenance reference for
+  legacy records.
 - `comparison` is now routable. It was already a valid frontmatter type but sat
   in `NON_ROUTABLE_TYPES` with no creation path, so a documented type could not
   be filed. It gains a `comparisons_folder` generic setting that defaults to

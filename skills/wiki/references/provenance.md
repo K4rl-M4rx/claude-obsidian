@@ -18,7 +18,9 @@ test -f "$CORE"
 - `wiki/meta/ledgers/source-ledger.json`: stable source identities, authority,
   SHA-256, retrieval/freshness, review state, and linked pages.
 - `wiki/meta/ledgers/claim-ledger.json`: falsifiable claims, note locations,
-  support, contradictions, confidence, risk, and review state.
+  support, contradictions, confidence, risk, and review state. **Retired
+  2026-10-10**: the ingest flow no longer registers claim entries, and the
+  field requirements below survive as reference for legacy records.
 
 Do not overload one ledger with all three jobs.
 
@@ -50,8 +52,11 @@ Do not overload one ledger with all three jobs.
 
 ## Claim proposal field requirements
 
-The transaction core validates the claim ledger mechanically; a proposal that
-violates any of these fails the whole bundle. Check them before drafting:
+Legacy reference: claim proposals are no longer drafted or registered (the
+ingest flow retired claim registration on 2026-10-10). The transaction core
+still validates any surviving claim ledger mechanically; a record that
+violates any of these fails the whole bundle. Check them before touching
+legacy records:
 
 - `reviewed_at`: an ISO date; required for `accepted`; never after the audit
   date (UTC — a local calendar date can sit ahead of it), and never earlier

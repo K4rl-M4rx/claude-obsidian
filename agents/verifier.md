@@ -60,7 +60,8 @@ worktree and state that choice.
   transaction, expected hashes, path containment, atomic replacement,
   rollback/recovery, exact changed paths, and concurrency/idempotence tests.
   Raw payloads are create-only except the legacy manifest.
-- **Evidence and privacy:** source and claim provenance is real and
+- **Evidence and privacy:** source provenance (and any surviving legacy
+  claim-ledger records) is real and
   internally consistent; locators and confidence are not fabricated; remote
   egress, destructive repair, and canonical research merge require explicit
   consent; capture logs do not leak secrets.

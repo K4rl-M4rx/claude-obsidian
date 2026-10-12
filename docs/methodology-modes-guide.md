@@ -7,7 +7,7 @@ change evidence rules, transaction safety, or existing files.
 
 | Mode | Principle | Typical routes |
 |---|---|---|
-| Generic | Familiar typed folders without a named methodology | `wiki/sources/`, `entities/`, `concepts/`, `questions/`, `comparisons/`, `synthesis/`, `sessions/` |
+| Generic | Familiar typed folders without a named methodology | `wiki/sources/`, `entities/`, `concepts/`, `methods/`, `questions/`, `comparisons/`, `synthesis/`, `sessions/` |
 | LYT | Maps of Content connect atomic notes | `wiki/mocs/`, `wiki/notes/` |
 | PARA | Organize by current actionability | `wiki/projects/`, `areas/`, `resources/`, `archives/` |
 | Zettelkasten | Stable IDs, atomic notes, dense links | Flat `wiki/<id>-<slug>.md` |

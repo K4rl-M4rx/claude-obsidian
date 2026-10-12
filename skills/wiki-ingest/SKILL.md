@@ -1,6 +1,6 @@
 ---
 name: wiki-ingest
-description: "Ingest supplied source material into an Obsidian vault with provenance and claim tracking: pasted text, files staged in the selected vault's inbox or .raw archive, or explicitly approved URLs. Use for a single source or bounded batch, not for saving an assistant answer. Triggers: ingest, ingest this file, ingest this URL, process this source, read and file this source, batch ingest, ingest these sources."
+description: "Ingest supplied source material into an Obsidian vault with provenance tracking: pasted text, files staged in the selected vault's inbox or .raw archive, or explicitly approved URLs. Use for a single source or bounded batch, not for saving an assistant answer. Triggers: ingest, ingest this file, ingest this URL, process this source, read and file this source, batch ingest, ingest these sources."
 ---
 
 # Ingest sources
@@ -129,7 +129,11 @@ frontmatter, not only from the index. Mint a `concept` page for every
 concept shared by two or more in-scope sources — counting uses on
 already-ledgered source pages, confirmable with one vault search — and
 for a single-source concept whenever recurrence is plausible; when in
-doubt, mint. The orchestrator drafts each concept page directly, without
+doubt, mint. Split by nature at minting time: a thing, phenomenon, or
+structure files as `concept`; a reusable way of doing things — a proof
+technique, a construction, a method of estimates — files as `type: method`
+(routed to the methods folder; grows under the same guidance with the bar
+reading 解决什么问题、核心思想、适用条件、操作要点、失败模式). The orchestrator drafts each concept page directly, without
 dispatching a worker: a `status: seed` stub of one grounded definition
 paragraph — the concept as these sources use it, key formula and locator
 per source — ending with pointers to those source pages for the exact
@@ -149,7 +153,7 @@ Adding concept links to sources already in the ledger is a separate
 link-only backfill bundle (replace against each page's current SHA-256),
 never part of a normal ingest. Quality gate:
 before building the bundle, check every research/paper draft against the
-section skeleton in the worker contract (研究背景, 所研究的数学实体,
+section skeleton in the worker contract (摘要, 研究背景, 所研究的数学实体,
 新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题
 — or their localized equivalents);
 return incomplete
@@ -173,17 +177,51 @@ dispatch (partial, or corrected after review), so the worker can skip the
 analysis phase and draft from it. The orchestrator resolves conflicts and
 merges once.
 
+## Grow concept pages
+
+A concept page starts as a `status: seed` stub and grows toward
+`status: developing` whenever the batch — which at minimum appends one
+sentence per new source, per the concept stage above — or a later dedicated
+pass touches the concept again. Growth has **no fixed section skeleton**: how a page is
+organized and what its sections are called must follow the nature of the
+concept (a mechanism cluster, an equation, and a criterion do not
+share a shape), and no gate may enforce particular sections.
+
+A concept page is **a map, not a dictionary**: it records the essence of the
+concept; derivations, estimate chains, and per-theorem content stay on the
+source pages and are reached through links. What is mandatory is the quality
+bar, carried as prompt-level guidance — the four items below are quality
+dimensions, not four mandatory sections:
+
+- **本质优先**：用抽象语言说清这个概念是什么、解决什么问题、核心机制是什么；配一个最能说明本质的公式或 toy model（LaTeX 原样），必要时加一个经典情形作具体锚点；不陷入任何具体推导、估计链或逐定理内容。
+- **关键结果（少量）**：只保留塑造了这个概念的少数关键结果——建议 3–6 条，至多 8 条；每条一句话 + 真实定位符（定理号/引理号/式号，取自来源页原文），建议用表格（结果 | 内容 | 来源）；其余来源贡献一律不进概念页。
+- **与本库其他主题的关系**：联系是出口——写出具体连接点（谁用了谁的机制、阈值如何对照），把读者引向来源页与相关概念页深入，不是罗列链接，更不把来源页的细节搬进来。
+- **未决问题（承自来源）与未摄入的版图**：来源综述里提到但本库尚未摄入的方向，如实列出（纯文本，不造链接）。
+
+A `type: method` page grows the same way, the bar reading 解决什么问题、核心
+思想、适用条件、操作要点、失败模式 — a recipe may keep its operational
+detail, which is exactly what a concept page must not.
+
+Style references for the bar live in
+[`references/concept-exemplars/`](references/concept-exemplars/) — ten
+concept pages from an earlier vault of the user's, kept as read-only style
+and depth exemplars (a same-topic exemplar may also seed a growth pass as
+source material). They belong to no vault: never link them from wiki pages,
+never count them in any graph or ledger, and treat their `address:` fields
+as legacy archive values.
+
 ## Apply provenance rules
 
 Read [the provenance contract](../wiki/references/provenance.md). Maintain the
-legacy ingestion manifest, source ledger, and claim ledger as separate records.
-Use stable SHA-256 source identity, vault-relative local locators or absolute
-HTTPS locators, authority, review state, freshness, and independence keys.
+legacy ingestion manifest and source ledger as separate records; the claim
+ledger is retired (emptied 2026-10-10) and new ingests register no claim
+entries. Use stable SHA-256 source identity, vault-relative local locators or
+absolute HTTPS locators, authority, review state, freshness, and independence
+keys.
 
-Preserve contradictory evidence. Mark no-data claims `unsupported`. An accepted
-claim needs a fresh active non-synthetic source; a high-risk accepted claim needs
-two independent sources. If support is insufficient, file uncertainty or refuse
-the requested conclusion instead of inventing evidence.
+Preserve contradictory evidence on the page itself. If support for a
+conclusion is insufficient, file uncertainty or refuse the requested
+conclusion instead of inventing evidence.
 
 ## Build one Ingest transaction
 
@@ -193,7 +231,7 @@ Draft a single `claude-obsidian.transaction.v1` bundle with
 
 - create-only raw captures;
 - source summaries and reviewed canonical page changes;
-- source and claim ledger records;
+- source ledger records;
 - `source_manifest_updates` for legacy delta/address metadata;
 - `address_requests` for new non-meta pages;
 - at least one active methodology index or MOC for every canonical page create
@@ -215,7 +253,7 @@ python3 "$CORE" transaction apply /path/to/ingest-bundle.json --vault /path/to/v
 ```
 
 Show the user the inputs, budget consumed, create/replace paths, raw captures,
-claim assessments, contradictions, and skipped items before apply. Canonical
+contradictions, and skipped items before apply. Canonical
 replacements or an expanded scope require explicit review.
 
 Report the operation ID and exact changed paths. Reapplying an identical bundle

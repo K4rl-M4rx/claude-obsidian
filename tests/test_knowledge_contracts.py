@@ -125,10 +125,11 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("fresh active supporting source", provenance)
 
     def test_research_source_skeleton_is_consistent_across_files(self) -> None:
-        """The seven section names must appear in both the worker contract and
-        the orchestrator's quality gate — either copy drifting alone would
-        make the gate check headings the worker never writes."""
+        """The eight section names, 摘要 first, must appear in both the worker
+        contract and the orchestrator's quality gate — either copy drifting
+        alone would make the gate check headings the worker never writes."""
         sections = (
+            "摘要",
             "研究背景",
             "所研究的数学实体",
             "新颖点",
@@ -142,8 +143,50 @@ class KnowledgeContractTests(unittest.TestCase):
         for name in sections:
             self.assertIn(name, ingest_agent, name)
             self.assertIn(name, ingest, name)
-        self.assertNotIn("与本库其他主题的关系", ingest_agent)
-        self.assertNotIn("与本库其他主题的关系", ingest)
+        self.assertLess(
+            ingest_agent.index("## 摘要"), ingest_agent.index("## 研究背景")
+        )
+        self.assertNotIn("## 与本库其他主题的关系", ingest_agent)
+        self.assertNotIn("## 与本库其他主题的关系", ingest)
+
+    def test_key_claims_field_is_retired(self) -> None:
+        """The redundant key_claims frontmatter field is gone from the source
+        template and claim registration is retired across the ingest
+        contracts (the ledger was emptied 2026-10-10)."""
+        frontmatter = (ROOT / "skills/wiki/references/frontmatter.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("key_claims", frontmatter)
+        ingest_agent = (ROOT / "agents/wiki-ingest.md").read_text(encoding="utf-8")
+        ingest = (ROOT / "skills/wiki-ingest/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("retired", ingest_agent)
+        self.assertIn("retired", ingest)
+        self.assertNotIn("claim ledger records", ingest)
+
+    def test_method_type_is_documented(self) -> None:
+        """The `method` page type exists for reusable ways of doing things,
+        distinct from `concept` (a thing/phenomenon/structure)."""
+        sys_path = ROOT / "claude_obsidian" / "page_schema.py"
+        self.assertIn('"method"', sys_path.read_text(encoding="utf-8"))
+        wiki = (ROOT / "WIKI.md").read_text(encoding="utf-8")
+        self.assertIn("| `method` | A reusable way of doing things", wiki)
+        ingest_agent = (ROOT / "agents/wiki-ingest.md").read_text(encoding="utf-8")
+        self.assertIn("`type: method`", ingest_agent)
+
+    def test_concept_growth_guidance_is_documented(self) -> None:
+        """Concept growth carries the quality bar as prompt-level guidance
+        with no fixed section skeleton, plus vault-external exemplar pages."""
+        ingest = (ROOT / "skills/wiki-ingest/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("## Grow concept pages", ingest)
+        self.assertIn("no fixed section skeleton", ingest)
+        self.assertIn("prompt-level guidance", ingest)
+        self.assertIn("a map, not a dictionary", ingest)
+        self.assertIn("references/concept-exemplars", ingest)
+        exemplars = ROOT / "skills/wiki-ingest/references/concept-exemplars"
+        pages = [p for p in exemplars.iterdir() if p.suffix == ".md" and p.name != "README.md"]
+        self.assertGreaterEqual(len(pages), 10)
+        for page in pages:
+            self.assertIn("type: concept", page.read_text(encoding="utf-8"))
 
     def test_concept_flow_survives_across_files(self) -> None:
         """Two batches once produced zero concept pages because no stage
@@ -236,7 +279,7 @@ class KnowledgeContractTests(unittest.TestCase):
         self.assertIn("Research-source page structure", ingest_agent)
         self.assertIn("所研究的数学实体", ingest_agent)
         self.assertIn("主要结果（自然语言）", ingest_agent)
-        self.assertIn("`normal` or `high` only", ingest_agent)
+        self.assertIn("Claim proposals are retired", ingest_agent)
 
     def test_canvas_discloses_render_time_network_egress(self) -> None:
         skill = (ROOT / "skills/canvas/SKILL.md").read_text(encoding="utf-8")

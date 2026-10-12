@@ -88,7 +88,9 @@ When the user asks to remove a source's traces from the vault, plan the
 cascade before writing anything. The engine writes create-or-replace only, so
 "removal" of a canonical page is a tombstone (`status: deprecated` or
 `archived`), never a file deletion; `.raw/` captures and the ingestion
-manifest stay untouched by this workflow.
+manifest stay untouched by this workflow. The claim ledger is legacy
+(emptied 2026-10-10; new ingests register no claims), so the claim steps
+below apply only to surviving legacy records.
 
 1. Enumerate everything tied to the source: the source's summary page, pages
    listing it in `sources:` (and in `related:`, `first_mentioned:`, or

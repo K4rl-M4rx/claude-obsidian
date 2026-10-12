@@ -37,6 +37,7 @@ PAGE_TYPES: tuple[str, ...] = (
     "source",
     "entity",
     "concept",
+    "method",
     "question",
     "comparison",
     "synthesis",

@@ -63,19 +63,16 @@ Every addition below is recorded in detail in
   claims. Physical deletion stays a manual user choice. See the
   "Cascade source removal" section of `skills/wiki-lint/SKILL.md`.
 - **Research-source page skeleton.** A source page for research/paper
-  material follows a fixed seven-section skeleton — 研究背景, 所研究的数学实体,
-  新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结, 局限与未决问题 — enforced
+  material follows a fixed eight-section skeleton — 摘要, 研究背景,
+  所研究的数学实体, 新颖点, 主要结果（自然语言）, 精确陈述与方法, 总结,
+  局限与未决问题 — enforced
   by an orchestrator quality gate with at most one rework; content the
   payload does not state is reported as a gap, never invented. The full
   contract lives in `agents/wiki-ingest.md`.
-- **Claim-proposal field contract.** Claim proposals must be field-complete
-  at drafting time, and the transaction core rejects the bundle otherwise: a
-  UTC `reviewed_at` never after the audit date, `risk` of `normal` or `high`
-  only, a `location.anchor` that exists in the target page, and array-shaped
-  `evidence`. `accepted` requires a fresh active non-synthetic source, and
-  high-risk acceptance two independent sources — distinct `independence_key`
-  plus normalized-origin and content-hash merging decides independence. All
-  of it is specified in `skills/wiki/references/provenance.md`.
+- **Claim-proposal field contract (retired 2026-10-10).** Claim registration
+  is no longer part of the ingest flow: the ledger was emptied and new
+  sources register no claims. The retired field contract survives as
+  reference in `skills/wiki/references/provenance.md`.
 - **Article identifier policy.** A page with `type: source` and
   `source_type: article` must carry a well-formed `doi` or `arxiv_id`, or
   mark the absence with a short `identifier_note` such as `none`; non-article

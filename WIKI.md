@@ -22,6 +22,7 @@ vault/
 │   ├── sources/
 │   ├── entities/
 │   ├── concepts/
+│   ├── methods/
 │   ├── questions/
 │   ├── comparisons/
 │   ├── synthesis/
@@ -77,6 +78,7 @@ Common page types:
 | `source` | Traceable summary of one source identity |
 | `entity` | Person, organization, product, project, or other named thing |
 | `concept` | Idea, framework, mechanism, or definition |
+| `method` | A reusable way of doing things: technique, construction, or argument recipe |
 | `question` | A scoped answer with visible evidence status |
 | `comparison` | Criteria-based contrast with cited support |
 | `synthesis` | Cross-source theme or pattern linking back to every supporting source |
@@ -89,7 +91,7 @@ Common page types:
 table above documents it for a reader; code reads the module rather than
 restating the values, and a test asserts the two stay in step.
 
-`source`, `entity`, `concept`, `question`, `comparison`, `synthesis`, and
+`source`, `entity`, `concept`, `question`, `comparison`, `synthesis`, `method`, and
 `session` are *routable*: the methodology router can place a new page of that
 type. `overview`, `meta`, and `fold` are valid frontmatter and not routable,
 because the product creates them through a dedicated operation instead of
@@ -164,13 +166,15 @@ include:
 - review state: `unreviewed`, `active`, `superseded`, or `rejected`;
 - linked pages.
 
-The claim ledger records a falsifiable claim, note location, supporting and
-contradicting source IDs, confidence, risk, review state, and assessment:
-`accepted`, `provisional`, `contested`, `unsupported`, or `deprecated`.
+The claim ledger is **retired** (legacy records only; new ingests register no
+claims). When a legacy registry exists, it records a falsifiable claim, note
+location, supporting and contradicting source IDs, confidence, risk, review
+state, and assessment: `accepted`, `provisional`, `contested`, `unsupported`,
+or `deprecated`.
 
-Accepted claims need active, fresh, non-synthetic support. High-risk accepted
-claims need two independent sources. Preserve contradictions and source
-lineage; do not silently select a winner.
+Legacy accepted claims needed active, fresh, non-synthetic support; high-risk
+accepted claims needed two independent sources. Preserve contradictions and
+source lineage; do not silently select a winner.
 
 ## Operation transaction
 

@@ -744,6 +744,16 @@ def test_comparison_and_synthesis_route_to_their_own_folders():
         "wiki/resources/synthesis/energy-methods-survey.md",
         wm.route_path("para", "synthesis", "energy methods survey", cfg),
     )
+    assert_eq(
+        "generic method",
+        "wiki/methods/Guo-Tice-variational-method.md",
+        wm.route_path("generic", "method", "Guo Tice variational method", cfg),
+    )
+    assert_eq(
+        "para method",
+        "wiki/resources/methods/Guo-Tice-variational-method.md",
+        wm.route_path("para", "method", "Guo Tice variational method", cfg),
+    )
     for mode in ("lyt", "zettelkasten"):
         for page_type in ("comparison", "synthesis"):
             path = wm.route_path(mode, page_type, "cross-source theme", cfg)
@@ -811,6 +821,15 @@ def test_legacy_mode_json_routes_new_types_through_defaults():
             "wiki/synthesis/",
             generic["synthesis_folder"],
         )
+
+
+def test_method_is_routable_in_the_schema():
+    """`method` must stay a valid, routable vocabulary entry; the partition
+    test only catches it transitively."""
+    from claude_obsidian.page_schema import PAGE_TYPES, route_rejection
+
+    assert_eq("`method` is in the vocabulary", True, "method" in PAGE_TYPES)
+    assert_eq("`method` is routable", None, route_rejection("method"))
 
 
 def test_comparison_and_synthesis_are_routable_in_the_schema():

@@ -105,6 +105,7 @@ DEFAULT_CONFIG = {
             "sources_folder": "wiki/sources/",
             "entities_folder": "wiki/entities/",
             "concepts_folder": "wiki/concepts/",
+            "methods_folder": "wiki/methods/",
             "sessions_folder": "wiki/sessions/",
             "questions_folder": "wiki/questions/",
             "comparisons_folder": "wiki/comparisons/",
@@ -286,6 +287,7 @@ def route_path(mode, content_type, name, cfg):
             "source":     g["sources_folder"] + _markdown_filename(slug),
             "entity":     g["entities_folder"] + _markdown_filename(raw),
             "concept":    g["concepts_folder"] + _markdown_filename(raw),
+            "method":     g["methods_folder"] + _markdown_filename(slug),
             "session":    g["sessions_folder"] + _markdown_filename(slug),
             "question":   g["questions_folder"] + _markdown_filename(slug),
             "comparison": g["comparisons_folder"] + _markdown_filename(slug),
@@ -310,6 +312,7 @@ def route_path(mode, content_type, name, cfg):
             "source":   p["resources_folder"] + "incoming/" + _markdown_filename(slug),
             "entity":   p["resources_folder"] + "people/" + _markdown_filename(raw),
             "concept":  p["resources_folder"] + "concepts/" + _markdown_filename(raw),
+            "method":   p["resources_folder"] + "methods/" + _markdown_filename(slug),
             # Session notes land in projects/inbox/; user reroutes to specific projects
             "session":    p["projects_folder"] + "inbox/" + _markdown_filename(slug),
             "question":   p["resources_folder"] + "questions/" + _markdown_filename(slug),
