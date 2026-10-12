@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import math
 import re
 import sys
@@ -57,8 +58,12 @@ SIGNAL_ADAMIC = 1.5
 SIGNAL_AFFINITY = 1.0
 ADAMIC_CAP = 2.0
 LOOSE_COHESION = 0.15
-SUPPORTED_TYPES = {"concept", "question"}
+SUPPORTED_TYPES = {"concept", "question", "method"}
 EXCLUDED_DIRS = {"meta", "folds"}
+ATTACHMENT_EXTENSIONS = {
+    ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".avif",
+    ".pdf", ".mp4", ".mov", ".mp3", ".wav",
+}
 
 
 def _mask_code(text: str) -> str:
@@ -151,6 +156,10 @@ def collect_pages(vault: Path) -> dict[str, dict]:
     for path in sorted(wiki.rglob("*.md")):
         relative = path.relative_to(vault).as_posix()
         parts = relative.split("/")
+        # Obsidian hides every dot-prefixed folder (e.g. .trash, .obsidian) —
+        # same rule as lint_engine; deleted notes must not re-enter the graph.
+        if any(part.startswith(".") for part in parts[:-1]):
+            continue
         if len(parts) > 2 and parts[1] in EXCLUDED_DIRS:
             continue
         pages[relative] = parse_page(path, relative)
@@ -162,8 +171,10 @@ def build_graph(
 ) -> tuple[dict[str, set[str]], dict[str, int], dict[str, set[str]], int]:
     """Return (undirected neighbours, degree, resolved inbound, dangling count).
 
-    Outbound targets that resolve to a non-page file (.canvas/.base) are
-    skipped rather than counted dangling — the graph covers wiki pages only.
+    Outbound targets that resolve to a page edge into the graph; targets
+    pointing at non-page files (.canvas/.base and media/attachment
+    extensions) are skipped rather than counted dangling — the graph covers
+    wiki pages only.
     """
     by_basename: dict[str, list[str]] = defaultdict(list)
     for relative, page in pages.items():
@@ -174,7 +185,8 @@ def build_graph(
     dangling = 0
     for relative, page in pages.items():
         for target in page["outbound"]:
-            if target.endswith((".canvas", ".base")):
+            extension = os.path.splitext(target)[1].lower()
+            if target.endswith((".canvas", ".base")) or extension in ATTACHMENT_EXTENSIONS:
                 continue
             candidates = by_basename.get(target, [])
             if len(candidates) == 1 and candidates[0] != relative:
@@ -414,10 +426,14 @@ def _articulation_points(neighbours: dict[str, set[str]]) -> list[str]:
 def find_gaps(
     pages: dict[str, dict], inbound: dict[str, set[str]]
 ) -> list[str]:
-    """Concept/question pages with no INBOUND link and no `sources:` entries."""
+    """Knowledge-gap pages: concept/question/method pages with no INBOUND
+    link and no `sources:` entries. Tombstones (deprecated/archived) are
+    never gaps — a deliberately retired page is not a request for sources."""
     gaps = []
     for relative in sorted(pages):
         page = pages[relative]
+        if page["status"] in ("deprecated", "archived"):
+            continue
         if page["type"] in SUPPORTED_TYPES and not inbound[relative] and not page["sources"]:
             gaps.append(relative)
     return gaps

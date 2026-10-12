@@ -83,6 +83,19 @@ Every addition below is recorded in detail in
   top-level inline scalar values, stripping inline comments only outside
   quotes; block-scalar indicators (`|`, `>`, and their variants) capture as
   empty values.
+- **`method` page type.** A new routable type for reusable ways of doing
+  things — proof techniques, constructions, operators, methods of estimates
+  — distinct from `concept` (a thing/phenomenon/structure). Files to
+  `wiki/methods/` in the generic mode (`methods_folder` setting; para mode
+  routes to `resources/methods/`), with concept/method split guidance at
+  the ingest concept stage.
+- **Concept growth guidance + exemplars.** Concept pages grow from seed to
+  developing under prompt-level guidance (essence first with one canonical
+  formula or toy model, 3–6 key results — at most 8 — each with a
+  source-verified locator, links as the exit for detail; no fixed section
+  skeleton). Ten earlier concept pages ship under
+  `skills/wiki-ingest/references/concept-exemplars/` as read-only style
+  exemplars.
 
 ## Attribution & license
 

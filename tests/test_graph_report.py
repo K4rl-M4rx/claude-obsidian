@@ -243,3 +243,50 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+class GraphExclusionTests(unittest.TestCase):
+    """Regression (fork fixes, 2026-10-12): dot-prefixed folders must not
+    enter the graph, and attachment targets must not count dangling."""
+
+    def test_dot_prefixed_folders_and_attachments_are_excluded(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = Path(tmp) / "vault"
+            concepts = vault / "wiki" / "concepts"
+            concepts.mkdir(parents=True)
+            (concepts / "Embed.md").write_text(
+                _page("Embed", "concept", "seed", [], ["Ghost", "Pasted image 2026.png"]),
+                encoding="utf-8",
+            )
+            trash = vault / "wiki" / ".trash"
+            trash.mkdir(parents=True)
+            (trash / "Deleted Note.md").write_text(
+                _page("Deleted Note", "concept", "seed", [], []),
+                encoding="utf-8",
+            )
+            pages = gr.collect_pages(vault)
+            self.assertNotIn("wiki/.trash/Deleted Note.md", pages)
+            self.assertTrue(
+                all(not part.startswith(".") for page in pages for part in page.split("/"))
+            )
+            _, _, _, dangling = gr.build_graph(pages)
+            # Only "Ghost" dangles; the .png attachment is skipped.
+            self.assertEqual(dangling, 1)
+
+    def test_method_pages_count_as_gaps_tombstones_do_not(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = Path(tmp) / "vault"
+            concepts = vault / "wiki" / "concepts"
+            concepts.mkdir(parents=True)
+            (concepts / "Lonely Method.md").write_text(
+                _page("Lonely Method", "method", "seed", [], []),
+                encoding="utf-8",
+            )
+            (concepts / "Retired Idea.md").write_text(
+                _page("Retired Idea", "concept", "deprecated", [], []),
+                encoding="utf-8",
+            )
+            pages = gr.collect_pages(vault)
+            inbound: dict[str, set[str]] = {r: set() for r in pages}
+            self.assertIn("wiki/concepts/Lonely Method.md", gr.find_gaps(pages, inbound))
+            self.assertNotIn("wiki/concepts/Retired Idea.md", gr.find_gaps(pages, inbound))

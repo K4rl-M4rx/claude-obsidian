@@ -992,6 +992,7 @@ def main():
     test_question_is_routable_in_every_mode()
     test_comparison_and_synthesis_route_to_their_own_folders()
     test_comparison_and_synthesis_are_routable_in_the_schema()
+    test_method_is_routable_in_the_schema()
     test_legacy_mode_json_routes_new_types_through_defaults()
     test_unroutable_valid_type_is_distinguished_from_unknown_type()
     test_route_rejection_exit_codes_reach_the_command_line()

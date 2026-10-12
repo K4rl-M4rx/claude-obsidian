@@ -89,7 +89,7 @@ assessment: unsupported
 risk: low
 ```
 
-# method
+### method
 
 No type-specific properties beyond the common set.
 
