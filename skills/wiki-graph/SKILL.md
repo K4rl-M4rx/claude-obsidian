@@ -46,7 +46,7 @@ by direct write.
 | Communities | Louvain modularity clusters with cohesion; `loose` flags cohesion below 0.15 |
 | Isolated pages | degree ≤ 1 — candidates for linking or deliberate archiving |
 | Bridges | articulation points: removing the page disconnects the link graph |
-| Unsupported pages | concept/question pages with no inbound link and no `sources:` entries |
+| Unsupported pages (knowledge gaps) | concept/question/method pages with no inbound link and no `sources:` entries; deliberately retired pages (deprecated/archived) are never gaps |
 
 Known limits of the report: a pair is scored only when the pages are directly
 linked or share a `sources:` entry; link resolution ignores ambiguous

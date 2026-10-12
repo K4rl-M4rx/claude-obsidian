@@ -20,6 +20,8 @@ implementation record for older releases.
   things files as `type: method` — and method pages grow under the same
   prompt-level guidance with a recipe-oriented bar (what problem it solves,
   core idea, applicability conditions, operational steps, failure modes).
+  Graph gap detection counts method pages as knowledge gaps and never
+  counts deprecated/archived tombstones.
 - Concept stage in the ingest flow: workers list the concepts a source
   substantially uses as structured candidates (canonical name, aliases,
   one-line definition with the key formula and a real locator) and write
