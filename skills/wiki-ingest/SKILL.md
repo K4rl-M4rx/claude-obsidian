@@ -241,7 +241,11 @@ Draft a single `claude-obsidian.transaction.v1` bundle with
   `wiki/overview.md` only when the high-level picture changed;
 - one batch log entry and a refreshed hot cache.
 
-Record SHA-256 preconditions for every target. Use one write per path. Do not use
+Record SHA-256 preconditions for every target in `expected_hashes` — the
+target's current content hash, or `null` when it must be absent. Set each
+write's `sha256` to the hash of the new content being written (for
+`content_file` writes, the file's bytes), never to the target's current
+hash. Use one write per path. Do not use
 host Write/Edit, Obsidian transport writes, deprecated per-file locks, or
 per-source/per-worker applies.
 

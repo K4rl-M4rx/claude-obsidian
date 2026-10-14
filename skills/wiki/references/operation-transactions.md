@@ -62,12 +62,23 @@ commit from a generic lifecycle hook.
 }
 ```
 
-`content` may replace `content_file` for small drafts. Use exactly one. Raw
-source payloads are create-only. `.raw/.manifest.json` and the address counter
-are expanded and journaled by the transaction engine when managed requests are
-present. Only `ingest` and `autoresearch` own non-empty managed requests;
-`setup` and `migration` may initialize the managed files directly. Other
-operation types cannot target them.
+`content` may replace `content_file` for small drafts. Use exactly one. A
+write's `sha256` declares the hash of the new content being written (for
+`content_file` writes, the file's bytes); a mismatch fails inspection with
+`CONTENT_HASH_MISMATCH`. The target's current-state hash belongs in
+`expected_hashes`, not here. Raw source payloads are create-only.
+`.raw/.manifest.json` and the address counter are expanded and journaled by
+the transaction engine when managed requests are present. Only `ingest` and
+`autoresearch` own non-empty managed requests; `setup` and `migration` may
+initialize the managed files directly. Other operation types cannot target
+them.
+
+A vault whose `address_map` predates the address counter fails
+`address_requests` inspection with `ADDRESS_COUNTER_COLLISION`. Initialize
+the counter with a one-write `setup` bundle that creates
+`.vault-meta/address-counter.txt` at the next free value
+(`scripts/allocate-address.sh --peek` prints it); `adopt` does not backfill
+the counter for a vault that already carries a manifest.
 
 Operation types are enforced authorities, not labels: `base` writes only
 `wiki/**/*.base`; `canvas` writes canvases under `wiki/canvases/` and its
