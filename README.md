@@ -1,5 +1,7 @@
 # claude-obsidian (K4rl-M4rx fork)
 
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/release-v2.2.0-d97745" alt="Release v2.2.0"></a>
+
 > **This is a fork of
 > [AgriciDaniel/claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian)
 > (v2.2.0, merge commit `32ac5a0`) — not the original project.**
