@@ -26,6 +26,8 @@ Link resolution is gitignore-aware: when a wikilink resolves to multiple
 candidates and at least one is not gitignored, gitignored candidates (for
 example build artifacts shadowing a page's name) are dropped before ambiguity
 is reported. Only ``.gitignore`` files inside the vault root are consulted,
+never ``.git/info/exclude``, global excludes, or a ``git`` subprocess, so
+reports stay deterministic and process-free.
 
 The frontmatter audit also enforces the article-identifier policy: a page with
 ``type: source`` and ``source_type: article`` must carry a ``doi`` or an
@@ -33,8 +35,6 @@ The frontmatter audit also enforces the article-identifier policy: a page with
 (a short value such as ``none``). Non-article source pages (``manuscript``
 and similar) are exempt. Version 1 reports may gain new category keys over
 time; consumers should read categories by name rather than by exact key set.
-never ``.git/info/exclude``, global excludes, or a ``git`` subprocess, so
-reports stay deterministic and process-free.
 
 This module never creates directories or files. Even its command-line entry
 point writes only to stdout. Provenance freshness uses the explicit ``as_of``
@@ -65,13 +65,7 @@ if __package__ in {None, ""}:
 
 from claude_obsidian.gitignore import GitignoreMatcher
 
-# Article source pages must carry a machine-resolvable identifier. A DOI is
-# ``10.<prefix>/<suffix>``; an arXiv id is either the post-2007 form
-# ``YYMM.NNNNN`` (optionally with a version suffix) or the legacy
-# ``archive/NNNNNNN`` form.
-_DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
-_ARXIV_NEW_RE = re.compile(r"^\d{4}\.\d{4,5}(v\d+)?$")
-_ARXIV_OLD_RE = re.compile(r"^[a-z][a-z.-]*/\d{7}(v\d+)?$", re.IGNORECASE)
+
 from claude_obsidian.json_utils import strict_json_loads
 from claude_obsidian.visible_paths import is_visible_path
 from claude_obsidian.limits import MAX_CANONICAL_LEDGER_BYTES
@@ -84,6 +78,14 @@ from claude_obsidian.markdown_links import (
     mask_protected_regions as _mask_markdown_code,
 )
 from claude_obsidian.paths import is_name_surrogate
+
+# Article source pages must carry a machine-resolvable identifier. A DOI is
+# ``10.<prefix>/<suffix>``; an arXiv id is either the post-2007 form
+# ``YYMM.NNNNN`` (optionally with a version suffix) or the legacy
+# ``archive/NNNNNNN`` form.
+_DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+_ARXIV_NEW_RE = re.compile(r"^\d{4}\.\d{4,5}(v\d+)?$")
+_ARXIV_OLD_RE = re.compile(r"^[a-z][a-z.-]*/\d{7}(v\d+)?$", re.IGNORECASE)
 
 REPORT_VERSION = 1
 ENGINE_VERSION = "1.2.0"
@@ -1467,9 +1469,13 @@ def _source_identifier_issues(wiki_pages: Sequence[_Page]) -> list[dict[str, str
         if not page.frontmatter.present:
             continue
         values = dict(page.frontmatter.values)
-        if values.get("type", "").casefold() != "source":
+        page_type = values.get("type", "")
+        source_kind = values.get("source_type", "")
+        # Empty, nested or numeric YAML values have no casefold; only a text
+        # ``type: source`` / ``source_type: article`` pair selects the policy.
+        if not isinstance(page_type, str) or page_type.casefold() != "source":
             continue
-        if values.get("source_type", "").casefold() != "article":
+        if not isinstance(source_kind, str) or source_kind.casefold() != "article":
             continue
         doi = values.get("doi", "")
         arxiv = values.get("arxiv_id", "")
