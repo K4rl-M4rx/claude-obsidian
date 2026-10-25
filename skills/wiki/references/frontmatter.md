@@ -110,5 +110,7 @@ No type-specific properties beyond the common set.
 8. Do not treat a frontmatter confidence label as evidence; linked active
    sources determine support. The claim ledger is retired (emptied
    2026-10-10) and receives no new entries.
-9. Quote numeric-only tag values, for example `- "2026"`, so their YAML type
-   remains text.
+9. A numeric-only tag is invalid even when quoted. Use `year/2026` or `y2026`,
+   or a numeric `year` property. Preserve existing user metadata unless its
+   correction is explicitly requested. See [Obsidian Tags](https://obsidian.md/help/tags),
+   checked 2026-10-17.

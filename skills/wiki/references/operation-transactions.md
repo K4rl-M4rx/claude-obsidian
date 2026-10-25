@@ -82,7 +82,7 @@ the counter for a vault that already carries a manifest.
 
 Operation types are enforced authorities, not labels: `base` writes only
 `wiki/**/*.base`; `canvas` writes canvases under `wiki/canvases/` and its
-optional `index.md`; `fold` writes exactly one `wiki/folds/*.md` page plus
+optional `_index.md`; `fold` writes exactly one `wiki/folds/*.md` page plus
 `wiki/index.md` and `wiki/log.md`; `configuration` writes only
 `.vault-meta/mode.json`; and `capture` creates only `.raw/captured/*` payloads.
 Save, Markdown, lint repair, and generic extension bundles remain confined to
