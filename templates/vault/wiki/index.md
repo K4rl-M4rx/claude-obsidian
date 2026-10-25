@@ -14,7 +14,7 @@ tags:
 This catalog is updated by completed knowledge operations.
 
 Start with [[overview|Vault overview]]. See [[hot|Recent context]] and
-[[log|Operation history]] for completed work.
+[[log|Operation history]] for completed work. [[purpose|Purpose]] states what this vault is for.
 
 ## Sources
 
